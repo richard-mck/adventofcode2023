@@ -29,6 +29,6 @@ class TrebuchetCalibration(object):
         print(sum)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     treb = TrebuchetCalibration()
     treb.calculate_values(treb.input_doc)

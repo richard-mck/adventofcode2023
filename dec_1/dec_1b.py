@@ -21,9 +21,26 @@ class TrebuchetCalibration(object):
     def __init__(self):
         with open("input.txt", "r") as f:
             self.input_doc = f.readlines()
-        self.example = ['two1nine', 'eightwothree', 'abcone2threexyz', 'xtwone3four', '4nineeightseven2', 'zoneight234',
-                        '7pqrstsixteen']
-        self.lookup_table = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+        self.example = [
+            "two1nine",
+            "eightwothree",
+            "abcone2threexyz",
+            "xtwone3four",
+            "4nineeightseven2",
+            "zoneight234",
+            "7pqrstsixteen",
+        ]
+        self.lookup_table = [
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+        ]
 
     def get_nums_from_string(self, line: str) -> str:
         """
@@ -61,6 +78,6 @@ class TrebuchetCalibration(object):
         print(sum)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     treb = TrebuchetCalibration()
     treb.calculate_values(treb.example)
