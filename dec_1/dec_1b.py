@@ -26,12 +26,24 @@ class TrebuchetCalibration(object):
         self.lookup_table = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
 
     def get_nums_from_string(self, line: str) -> str:
+        """
+        Given a substring, check if it begins with an English word representing a digit
+        :param line: an alphanumeric string
+        :return: the numeric value of a digit or None if no numbers are present
+        """
         for word in self.lookup_table:
             if line.find(word) == 0:
                 return str(self.lookup_table.index(word) + 1)
         return None
 
     def process_line(self, line: str) -> str:
+        """
+        Iterate over a string to pull out all digits or words representing numbers. Not especially pythonic but makes
+        for easier manipulation of raw data.
+        :param line: an alphanumeric string containing digits
+        :return: the concatenation of the first and last digit in the string, if only one digit is present, it will be
+        doubled. e.g. ["7"] becomes "77"
+        """
         line_list = [None] * len(line)
         for index in range(len(line)):
             letter = line[index]
