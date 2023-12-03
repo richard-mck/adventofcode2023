@@ -42,7 +42,7 @@ def is_round_valid(round: str) -> bool:
     for colour in COLOURS:
         index = round.find(colour)
         if index != -1:
-            count = int(round[index - 3: index].strip())
+            count = int(round[index - 3 : index].strip())
             colour_count[colour] -= count
     for item in colour_count:
         if colour_count[item] < 0:
