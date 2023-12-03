@@ -24,8 +24,6 @@ from common_functions import load_input
 
 
 # We can iterate over the rows and check for the presence of symbols
-# If a symbol is present, we can then check the index, index+1 and index-1 in the current row and the rows
-# before and after for numbers
 def get_indices_of_symbols(row: str) -> list:
     """Given a string, return a list of all non-digit, non-period symbols (stripping whitespace)"""
     row = row.rstrip()
@@ -34,6 +32,18 @@ def get_indices_of_symbols(row: str) -> list:
         if row[index] != "." and not row[index].isdigit():
             indices.append(index)
     return indices
+
+
+# If a symbol is present, we can then check the index, index+1 and index-1 in the current row and the rows
+# before and after for numbers
+def check_row_for_numbers(digit_dict: dict, symbol_index: int) -> list[int]:
+    matched_numbers = []
+    for num in digit_dict:
+        matches = any(symbol_index - 1 <= i < symbol_index + 1 for i in digit_dict[num])
+        if matches:
+            matched_numbers.append(num)
+    return matched_numbers
+
 
 def format_numbers_to_indices(row: str) -> dict:
     """
