@@ -28,7 +28,7 @@ from common_functions import load_input
 # before and after for numbers
 def get_indices_of_symbols(row: str) -> list:
     """Given a string, return a list of all non-digit, non-period symbols (stripping whitespace)"""
-    row.rstrip()
+    row = row.rstrip()
     indices = []
     for index in range(len(row)):
         if row[index] != "." and not row[index].isdigit():
