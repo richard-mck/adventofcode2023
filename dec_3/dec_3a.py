@@ -22,6 +22,20 @@ In this schematic, two numbers are not part numbers because they are not adjacen
 
 from common_functions import load_input
 
+
+# We can iterate over the rows and check for the presence of symbols
+# If a symbol is present, we can then check the index, index+1 and index-1 in the current row and the rows
+# before and after for numbers
+def get_indices_of_symbols(row: str) -> list:
+    """Given a string, return a list of all non-digit, non-period symbols (stripping whitespace)"""
+    row.rstrip()
+    indices = []
+    for index in range(len(row)):
+        if row[index] != "." and not row[index].isdigit():
+            indices.append(index)
+    return indices
+
+
 if __name__ == "__main__":
     data = load_input("example_a.txt")
     print(data)
