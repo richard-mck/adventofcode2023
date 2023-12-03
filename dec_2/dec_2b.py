@@ -40,7 +40,12 @@ def parse_input(input_data: list) -> dict:
     return result
 
 
-def count_colours(round: str):
+def count_colours(round: str) -> dict:
+    """
+    Given a round, tally up the values for each colour
+    :param round: a string containing at least one colour and one digit
+    :return: a dictionary in the with each colour as keys and the tally of each as values
+    """
     colour_count = {
         "red": 0,
         "green": 0,
@@ -68,6 +73,7 @@ if __name__ == "__main__":
         for round in games[game]:
             round_count = count_colours(round)
             for colour in round_count:
+                # If a new value is higher than the old one, we can drop the old value
                 if round_count[colour] > colour_count[colour]:
                     colour_count[colour] = round_count[colour]
         powers = colour_count["red"] * colour_count["green"] * colour_count["blue"]

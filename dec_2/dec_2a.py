@@ -18,12 +18,16 @@ COLOURS = ["red", "green", "blue"]
 
 
 def load_input(filename: str) -> list:
+    """Given a filename, load the associated file as a list of strings"""
     with open(filename, "r") as f:
         file_content = f.readlines()
     return file_content
 
 
 def parse_input(input_data: list) -> dict:
+    """
+    Split a given list into a game dictionary, with the game ID as the key and the rounds as list items for values
+    """
     result = {}
     for line in input_data:
         data = line.split(":")
@@ -34,6 +38,11 @@ def parse_input(input_data: list) -> dict:
 
 
 def is_round_valid(round: str) -> bool:
+    """
+    Check if a single round is valid by checking that each colour value is less than the required amount
+    :param round: a string containing at least one colour and a digit
+    :return: True if the round is valid, False if not
+    """
     colour_count = {
         "red": 12,
         "green": 13,
@@ -42,7 +51,7 @@ def is_round_valid(round: str) -> bool:
     for colour in COLOURS:
         index = round.find(colour)
         if index != -1:
-            count = int(round[index - 3 : index].strip())
+            count = int(round[index - 3: index].strip())
             colour_count[colour] -= count
     for item in colour_count:
         if colour_count[item] < 0:
