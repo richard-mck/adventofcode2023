@@ -35,6 +35,22 @@ def get_indices_of_symbols(row: str) -> list:
             indices.append(index)
     return indices
 
+def format_numbers_to_indices(row: str) -> dict:
+    """
+    Given a row, transform it into a dict containing numbers as keys and a list of indices for these numbers as
+    values
+    """
+    digit_dict = {
+        num: [
+            index
+            for index in range(row.find(num), row.find(num) + len(num))
+            if row[index].isdigit() and row[index] in num
+        ]
+        for num in row.split(".")
+        if num.isdigit()
+    }
+    return digit_dict
+
 
 if __name__ == "__main__":
     data = load_input("example_a.txt")
