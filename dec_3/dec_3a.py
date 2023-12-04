@@ -67,4 +67,19 @@ def format_numbers_to_indices(row: str) -> dict:
 if __name__ == "__main__":
     data = load_input("example_a.txt")
     print(data)
-    pass
+    # TODO: refactor this into proper functions
+    symbol_indices = [get_indices_of_symbols(i) for i in data]
+    digit_dict = [format_numbers_to_indices(i) for i in data]
+    part_count = []
+    for i in range(len(symbol_indices)):
+        if len(symbol_indices[i]) == 0:
+            continue
+        for symbol in symbol_indices[i]:
+            low = check_row_for_numbers(digit_dict[i - 1], symbol)
+            med = check_row_for_numbers(digit_dict[i], symbol)
+            high = check_row_for_numbers(digit_dict[i + 1], symbol)
+            part_count += low + med + high
+        print(
+            f"Data: {data[i].rstrip()}, symbols: {symbol_indices[i]} - parts: {part_count}"
+        )
+    print(sum(part_count))
