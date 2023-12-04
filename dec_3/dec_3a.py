@@ -48,14 +48,14 @@ def get_indices_of_symbols(row: str) -> list:
 
 # If a symbol is present, we can then check the index, index+1 and index-1 in the current row and the rows
 # before and after for numbers
-def check_row_for_numbers(digit_dict: dict, symbol_index: int) -> list[int]:
+def check_row_for_numbers(part_nums: list[PartNumber], symbol_index: int) -> list[int]:
     matched_numbers = []
-    for num in digit_dict:
+    for key, value in enumerate(part_nums):
         matches = any(
-            symbol_index - 1 <= i <= symbol_index + 1 for i in digit_dict[num]
+            symbol_index - 1 <= i <= symbol_index + 1 for i in part_nums[key].indices
         )
         if matches:
-            matched_numbers.append(num)
+            matched_numbers.append(value.part_int)
     return matched_numbers
 
 
