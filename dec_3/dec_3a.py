@@ -59,23 +59,18 @@ def check_row_for_numbers(digit_dict: dict, symbol_index: int) -> list[int]:
     return matched_numbers
 
 
-def format_numbers_to_indices(row: str) -> dict:
+def format_numbers_to_indices(row: str) -> list[PartNumber]:
     """
-    Given a row, transform it into a dict containing numbers as keys and a list of indices for these numbers as
-    values
+    Given a row, transform it into a list of PartNumbers containing numbers as attributes and a list of indices for
+    these numbers.
+    Replaces checked values in the row as it goes, ensuring no duplicate entries
     """
-    # TODO: work out how to handle case where a number contains the same digits e.g. 24 contains 4
-    # If 24 happens first, the `.find()` function will only grab the first instance
-    result = {}
-    digit_dict = {
-        int(num): [
-            index
-            for index in range(row.find(num), row.find(num) + len(num))
-            if row[index].isdigit() and row[index] in num
-        ]
-        for num in findall("\d+", row)
-    }
-    return digit_dict
+    result = [PartNumber(num) for num in findall("\d+", row)]
+    for item in result:
+        index = row.find(item.part_number)
+        item.generate_indices(index)
+        row = row.replace(item.part_number, "." * len(item.part_number), 1)
+    return result
 
 
 if __name__ == "__main__":
