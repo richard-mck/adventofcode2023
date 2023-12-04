@@ -53,6 +53,9 @@ def format_numbers_to_indices(row: str) -> dict:
     Given a row, transform it into a dict containing numbers as keys and a list of indices for these numbers as
     values
     """
+    # TODO: work out how to handle case where a number contains the same digits e.g. 24 contains 4
+    # If 24 happens first, the `.find()` function will only grab the first instance
+    result = {}
     digit_dict = {
         int(num): [
             index
