@@ -24,6 +24,18 @@ from re import findall
 from common_functions import load_input
 
 
+class PartNumber(object):
+    def __init__(self, part_number: str):
+        self.part_number = part_number
+        self.part_int = int(part_number)
+        self.indices = []
+
+    def generate_indices(self, index: int):
+        self.indices.append(index)
+        for i in range(index + 1, index + len(self.part_number)):
+            self.indices.append(i)
+
+
 # We can iterate over the rows and check for the presence of symbols
 def get_indices_of_symbols(row: str) -> list:
     """Given a string, return a list of all non-digit, non-period symbols (stripping whitespace)"""
