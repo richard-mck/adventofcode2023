@@ -40,7 +40,9 @@ def get_indices_of_symbols(row: str) -> list:
 def check_row_for_numbers(digit_dict: dict, symbol_index: int) -> list[int]:
     matched_numbers = []
     for num in digit_dict:
-        matches = any(symbol_index - 1 <= i < symbol_index + 1 for i in digit_dict[num])
+        matches = any(
+            symbol_index - 1 <= i <= symbol_index + 1 for i in digit_dict[num]
+        )
         if matches:
             matched_numbers.append(num)
     return matched_numbers
