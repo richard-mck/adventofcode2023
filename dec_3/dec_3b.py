@@ -43,10 +43,10 @@ class PartNumber(object):
 
 # We can iterate over the rows and check for the presence of symbols
 def get_indices_of_symbols(row: str) -> list:
-    """Given a string, return a list of all non-digit, non-period symbols (stripping whitespace)"""
+    """Given a string, return a list of all * symbols (stripping whitespace)"""
     row = row.rstrip()
     indices = [
-        key for key, _ in enumerate(row) if row[key] != "." and not row[key].isdigit()
+        key for key, _ in enumerate(row) if row[key] == "*" and not row[key].isdigit()
     ]
     return indices
 
