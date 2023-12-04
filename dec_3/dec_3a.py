@@ -19,6 +19,7 @@ Here is an example engine schematic:
 In this schematic, two numbers are not part numbers because they are not adjacent to a symbol: 114 (top right) and 58
 (middle right). Every other number is adjacent to a symbol and so is a part number; their sum is 4361.
 """
+from re import findall
 
 from common_functions import load_input
 
@@ -51,13 +52,12 @@ def format_numbers_to_indices(row: str) -> dict:
     values
     """
     digit_dict = {
-        num: [
+        int(num): [
             index
             for index in range(row.find(num), row.find(num) + len(num))
             if row[index].isdigit() and row[index] in num
         ]
-        for num in row.split(".")
-        if num.isdigit()
+        for num in findall("\d+", row)
     }
     return digit_dict
 
