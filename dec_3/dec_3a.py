@@ -75,6 +75,8 @@ def format_numbers_to_indices(row: str) -> list[PartNumber]:
 
 if __name__ == "__main__":
     data = load_input("example_a.txt")
+    # Reddit example should yield 925,6756
+    # Standard example should yield 4361, 467835
     print(data)
     # TODO: refactor this into proper functions
     symbol_indices = [get_indices_of_symbols(i) for i in data]
