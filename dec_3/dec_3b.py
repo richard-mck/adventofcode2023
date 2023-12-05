@@ -80,6 +80,26 @@ def format_numbers_to_indices(row: str) -> list[PartNumber]:
     return result
 
 
+def find_gear_ratios(rows: list[list[PartNumber]], symbol_index: int) -> list[int]:
+    # We have to consider the relationship between a single instance of a symbol and all adjacent rows
+    # However, we do not need to consider the relationship between multiple symbols and adjacent rows
+    # We can examine our rows symbol by symbol to find matches
+    # We know we have a match of two items in a single row if their indices +1 and -1 overlap
+    # We know that vertically and diagonally, our number indices must overlap or overlap given +1 and -1
+    def multiply_row(row: list):
+        return row[0][1] * row[1][1]
+
+    ratios = []
+    low = check_row_for_numbers(rows[0], symbol_index)
+    med = check_row_for_numbers(rows[1], symbol_index)
+    high = check_row_for_numbers(rows[2], symbol_index)
+    for item in [low, med, high]:
+        if len(item) == 2:
+            ratios.append(multiply_row(item))
+
+    return ratios
+
+
 if __name__ == "__main__":
     data = load_input("example_a.txt")
     # Standard example should yield 4361, 467835
