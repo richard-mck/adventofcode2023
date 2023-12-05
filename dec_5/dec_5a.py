@@ -111,8 +111,8 @@ from common_functions import load_input
 
 class MapRanges(object):
     def __init__(self, destination: int, source: int, range_length: int):
-        self.destination = [i for i in range(destination, destination + range_length)]
-        self.source = [i for i in range(source, source + range_length)]
+        self.destination = range(destination, destination + range_length)
+        self.source = range(source, source + range_length)
 
 
 class AlmanacMap(object):
@@ -145,9 +145,8 @@ def extract_map_blocks(raw_data: list[str]) -> list[AlmanacMap]:
 
 def convert_value_with_map(search_value: int, map_block: AlmanacMap) -> int:
     for entries in map_block.entries:
-        for index, value in enumerate(entries.source):
-            if value == search_value:
-                return entries.destination[index]
+        if search_value in entries.source:
+            return entries.destination[entries.source.index(search_value)]
     return search_value
 
 
