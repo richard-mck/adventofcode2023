@@ -154,4 +154,11 @@ if __name__ == "__main__":
     data = load_input("example.txt")
     seeds = data[0].rstrip().split()
     map_blocks = extract_map_blocks(data[2:])
+    result = []
+    for seed in seeds[1:]:
+        seed = int(seed)
+        for block in map_blocks:
+            seed = convert_value_with_map(seed, block)
+        result.append(seed)
+    print(f"{result} - min {min(result)}")
     pass
