@@ -143,6 +143,14 @@ def extract_map_blocks(raw_data: list[str]) -> list[AlmanacMap]:
     return result
 
 
+def convert_value_with_map(search_value: int, map_block: AlmanacMap) -> int:
+    for entries in map_block.entries:
+        for index, value in enumerate(entries.source):
+            if value == search_value:
+                return entries.destination[index]
+    return search_value
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     seeds = data[0].rstrip().split()
