@@ -129,6 +129,22 @@ class AlmanacMap(object):
         return result
 
 
+def extract_map_blocks(raw_data: list[str]) -> list[AlmanacMap]:
+    result = []
+    temp_list = []
+    raw_data.append("\n")  # Add a new line to make data consistent
+    for row in raw_data:
+        if row[0].isalnum():
+            temp_list.append(row)
+            continue
+        result.append(AlmanacMap(temp_list[0], temp_list[1:]))
+        temp_list = []
+
+    return result
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
+    seeds = data[0].rstrip().split()
+    map_blocks = extract_map_blocks(data[2:])
     pass
