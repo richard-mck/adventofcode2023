@@ -42,7 +42,7 @@ class PartNumber(object):
 
 
 # We can iterate over the rows and check for the presence of symbols
-def get_indices_of_symbols(row: str) -> list:
+def get_indices_of_symbols(row: str) -> list[int]:
     """Given a string, return a list of all * symbols (stripping whitespace)"""
     row = row.rstrip()
     indices = [
@@ -53,14 +53,16 @@ def get_indices_of_symbols(row: str) -> list:
 
 # If a symbol is present, we can then check the index, index+1 and index-1 in the current row and the rows
 # before and after for numbers
-def check_row_for_numbers(part_nums: list[PartNumber], symbol_index: int) -> list[int]:
+def check_row_for_numbers(
+    part_nums: list[PartNumber], symbol_index: int
+) -> list[(int, int)]:
     matched_numbers = []
     for key, value in enumerate(part_nums):
         matches = any(
             symbol_index - 1 <= i <= symbol_index + 1 for i in part_nums[key].indices
         )
         if matches:
-            matched_numbers.append(value.part_int)
+            matched_numbers.append((symbol_index, value.part_int))
     return matched_numbers
 
 
@@ -90,6 +92,9 @@ if __name__ == "__main__":
         if len(symbol_indices[i]) == 0:
             continue
         for symbol in symbol_indices[i]:
+            ratios = find_gear_ratios(
+                [digit_dict[i - 1], digit_dict[i], digit_dict[i + 1]], symbol
+            )
             low = check_row_for_numbers(digit_dict[i - 1], symbol)
             med = check_row_for_numbers(digit_dict[i], symbol)
             high = check_row_for_numbers(digit_dict[i + 1], symbol)
