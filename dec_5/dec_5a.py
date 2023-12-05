@@ -108,6 +108,27 @@ What is the lowest location number that corresponds to any of the initial seed n
 
 from common_functions import load_input
 
+
+class MapRanges(object):
+    def __init__(self, destination: int, source: int, range_length: int):
+        self.destination = [i for i in range(destination, destination + range_length)]
+        self.source = [i for i in range(source, source + range_length)]
+
+
+class AlmanacMap(object):
+    def __init__(self, name: str, entries: list[str]):
+        self.name = name
+        self.entries = self.process_entries(entries)
+
+    @staticmethod
+    def process_entries(entries: list[str]) -> list[MapRanges]:
+        result = []
+        for item in entries:
+            item = [int(i) for i in item.split()]
+            result.append(MapRanges(item[0], item[1], item[2]))
+        return result
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     pass
