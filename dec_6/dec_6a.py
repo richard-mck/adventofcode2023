@@ -54,7 +54,27 @@ together?
 """
 
 from common_functions import load_input
+from re import findall
+
+
+class SingleRace(object):
+    def __init__(self, time: int, distance: int):
+        self.time = time
+        self.distance = distance
+
+
+def parse_raw_data(raw_data: list[str]) -> list[SingleRace]:
+    time = findall("\d+", raw_data[0])
+    distance = findall("\d+", raw_data[1])
+    return [
+        SingleRace(int(time[index]), int(distance[index]))
+        for index, _ in enumerate(time)
+    ]
+
 
 if __name__ == "__main__":
     data = load_input("example.txt")
+    print(data)
+    parsed_data = parse_raw_data(data)
+    print(parsed_data)
     pass
