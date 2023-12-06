@@ -78,6 +78,9 @@ def calculate_distance_travelled(t_press, t_total):
 
 if __name__ == "__main__":
     data = load_input("example.txt")
+    part_2 = True
+    if part_2:
+        data = [i.split(":")[1].replace(" ", "") for i in data]
     print(data)
     parsed_data = parse_raw_data(data)
     print(parsed_data)
