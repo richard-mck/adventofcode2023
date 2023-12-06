@@ -150,6 +150,14 @@ def convert_value_with_map(search_value: int, map_block: AlmanacMap) -> int:
     return search_value
 
 
+def get_range_overlap(r1: range, r2: range) -> range or None:
+    return (
+        range(
+            max(r1.start, r2.start),
+            min(r1.stop, r2.stop),
+        )
+        or None
+    )
 if __name__ == "__main__":
     data = load_input("example.txt")
     seeds = data[0].rstrip().split()
