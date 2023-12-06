@@ -72,9 +72,23 @@ def parse_raw_data(raw_data: list[str]) -> list[SingleRace]:
     ]
 
 
+def calculate_distance_travelled(t_press, t_total):
+    return t_press * (t_total - t_press)
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
     parsed_data = parse_raw_data(data)
     print(parsed_data)
+    winning_rounds = 1
+    for race in parsed_data:
+        tally = 0
+        for i in range(race.time):
+            new_record = calculate_distance_travelled(i + 1, race.time)
+            if new_record > race.distance:
+                tally += 1
+        print(f"Race: {tally}")
+        winning_rounds *= tally
+        print(f"Winning_rounds: {winning_rounds}")
     pass
