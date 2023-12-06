@@ -158,6 +158,33 @@ def get_range_overlap(r1: range, r2: range) -> range or None:
         )
         or None
     )
+
+
+def compare_ranges(r1: range, r2: range, destination: range) -> list[range]:
+    # We have 5 possible situations:
+    # 1. There is no overlap between seed and source |---Se----|<-------So------> -> Return only seed
+    overlap = get_range_overlap(r1, r2)
+    if overlap is None:
+        return [r1]
+    # We can now find the destination indices and convert the overlap:
+    start_index = r2.index(overlap.start)
+    stop_index = r2.index(overlap.stop)
+    overlap = destination[start_index:stop_index]
+    result = [overlap]
+    # 2. Source overlaps and extends beyond seed |---Se-<---|----So--------> -> Return underlap and matching
+    if r1.start < r2.start and r1.stop < r2.stop:
+        result.append(range(r1.start, r2[r2.index(r1.stop)]))
+    # 3. Seed contains all of source |---Se----<-------So------>---| -> Return underlap, overlap and matching
+    if r1.start < r2.start and r1.stop > r2.stop:
+        result.append(range(r1.start, r2.start))
+        result.append(range(r2.stop, r1.stop))
+    # 4. Source starts before seed and extends beyond source <---So---|---Se-->--| -> Return matching and post-match
+    if r2.start < r1.start and r1.stop > r2.stop:
+        result.append(range(r2.stop, r1.stop))
+    # 5. Source is larger in than seed <---|---Se----|---So------> -> Return only matching
+    # if r2.start < r1.start and r2.stop > r1.stop:
+    #     return [overlap]
+    return result
 if __name__ == "__main__":
     data = load_input("example.txt")
     seeds = data[0].rstrip().split()
