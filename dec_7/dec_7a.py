@@ -71,6 +71,35 @@ FACE_VALUES = {
     "3": "B",
     "2": "A",
 }
+
+Hand = namedtuple("Hand", "cards bid value alpha")
+
+
+def get_hand_value(hand: str) -> int:
+    unique_vals = list(Counter(hand).values())
+    if 5 in unique_vals:
+        return 7
+    if 4 in unique_vals:
+        return 6
+    if 3 in unique_vals and 2 in unique_vals:
+        return 5
+    if 3 in unique_vals and 1 in unique_vals:
+        return 4
+    if unique_vals.count(2) == 2:
+        return 3
+    if unique_vals.count(1) == 3:
+        return 2
+    if unique_vals.count(1) == 5:
+        return 1
+
+
+def transform_hand_to_alpha(hand: str) -> str:
+    digits = ""
+    for letter in hand:
+        digits = digits + FACE_VALUES[letter]
+    return digits
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     pass
