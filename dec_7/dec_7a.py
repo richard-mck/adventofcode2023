@@ -112,4 +112,10 @@ if __name__ == "__main__":
         for item in data
     ]
     print(cards)
+    sorted_cards = sorted(cards, key=attrgetter("value", "alpha"))
+    print(sorted_cards)
+    winnings = 0
+    for index, _ in enumerate(sorted_cards):
+        winnings += (index + 1) * int(sorted_cards[index].bid)
+    print(winnings)
     pass
