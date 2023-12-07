@@ -102,4 +102,14 @@ def transform_hand_to_alpha(hand: str) -> str:
 
 if __name__ == "__main__":
     data = load_input("example.txt")
+    cards = [
+        Hand(
+            item.split()[0],
+            item.split()[1],
+            get_hand_value(item.split()[0]),
+            transform_hand_to_alpha(item.split()[0]),
+        )
+        for item in data
+    ]
+    print(cards)
     pass
