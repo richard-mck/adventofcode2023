@@ -51,8 +51,26 @@ with its rank (765 * 1 + 220 * 2 + 28 * 3 + 684 * 4 + 483 * 5). So the total win
 Find the rank of every hand in your set. What are the total winnings?
 """
 
+from collections import namedtuple, Counter
+from operator import attrgetter
+
 from common_functions import load_input
 
+FACE_VALUES = {
+    "A": "M",
+    "K": "L",
+    "Q": "K",
+    "J": "J",
+    "T": "I",
+    "9": "H",
+    "8": "G",
+    "7": "F",
+    "6": "E",
+    "5": "D",
+    "4": "C",
+    "3": "B",
+    "2": "A",
+}
 if __name__ == "__main__":
     data = load_input("example.txt")
     pass
