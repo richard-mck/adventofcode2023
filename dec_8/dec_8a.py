@@ -33,6 +33,7 @@ Starting at AAA, follow the left/right instructions. How many steps are required
 
 from collections import namedtuple
 from re import findall
+from math import lcm
 
 from common_functions import load_input
 
@@ -81,15 +82,15 @@ if __name__ == "__main__":
     nodes = parse_nodes(sample[2:])
     check_nodes = [nodes[node] for node in nodes if nodes[node].name.endswith("A")]
     print(f"Starting nodes: {check_nodes}")
-    while not (reached_goal(check_nodes)):
-        for instruction in instructions:
-            tally += 1
-            for i, _ in enumerate(check_nodes):
-                print(check_nodes[i])
-                if instruction == "L":
-                    goal = nodes[check_nodes[i].name].left
-                if instruction == "R":
-                    goal = nodes[check_nodes[i].name].right
-                check_nodes[i] = nodes[goal]
-    print(tally)
+    z_factors = []
+    for node in check_nodes:
+        tally = 0
+        while not reached_goal([node]):
+            for instruction in instructions:
+                next_round = get_next_node(node, instruction)
+                node = nodes[next_round]
+                tally += 1
+        z_factors.append(tally)
+    print(z_factors)
+    print(lcm(*z_factors))
     pass
