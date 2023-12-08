@@ -38,6 +38,15 @@ from common_functions import load_input
 
 Node = namedtuple("Node", "name left right")
 
+
+def parse_nodes(data: list[str]) -> dict:
+    result = {}
+    for row in data:
+        nodes = findall("\w+", row)
+        result[nodes[0]] = Node(nodes[0], nodes[1], nodes[2])
+    return result
+
+
 if __name__ == "__main__":
     sample = load_input("example_a.txt")
     instructions = sample[0].rstrip()
