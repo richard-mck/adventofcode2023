@@ -47,6 +47,11 @@ def parse_nodes(data: list[str]) -> dict:
     return result
 
 
+def reached_goal(nodes: list[Node]) -> bool:
+    true_tally = [True for node in nodes if node.name.endswith("Z")]
+    return len(true_tally) == len(nodes)
+
+
 if __name__ == "__main__":
     sample = load_input("example_a.txt")
     instructions = sample[0].rstrip()
