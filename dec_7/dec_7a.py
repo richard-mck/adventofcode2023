@@ -93,6 +93,17 @@ def get_hand_value(hand: str) -> int:
         return 1
 
 
+def get_hand_value_part_2(hand: str) -> int:
+    replacement_hand = ""
+    most_common = Counter(hand).most_common()[0]
+    for letter in hand:
+        new_letter = letter
+        if letter == "J" and most_common[1] != 1:
+            new_letter = most_common[0]
+        replacement_hand = replacement_hand + new_letter
+    return get_hand_value(replacement_hand)
+
+
 def transform_hand_to_alpha(hand: str) -> str:
     digits = ""
     for letter in hand:
@@ -107,6 +118,38 @@ if __name__ == "__main__":
             item.split()[0],
             item.split()[1],
             get_hand_value(item.split()[0]),
+            transform_hand_to_alpha(item.split()[0]),
+        )
+        for item in data
+    ]
+    print(cards)
+    sorted_cards = sorted(cards, key=attrgetter("value", "alpha"))
+    print(sorted_cards)
+    winnings = 0
+    for index, _ in enumerate(sorted_cards):
+        winnings += (index + 1) * int(sorted_cards[index].bid)
+    print(winnings)
+    print("\nPart 2!\n")
+    FACE_VALUES = {
+        "A": "M",
+        "K": "L",
+        "Q": "K",
+        "T": "J",
+        "9": "I",
+        "8": "H",
+        "7": "G",
+        "6": "F",
+        "5": "E",
+        "4": "D",
+        "3": "C",
+        "2": "B",
+        "J": "A",
+    }
+    cards = [
+        Hand(
+            item.split()[0],
+            item.split()[1],
+            get_hand_value_part_2(item.split()[0]),
             transform_hand_to_alpha(item.split()[0]),
         )
         for item in data
