@@ -95,11 +95,23 @@ def get_hand_value(hand: str) -> int:
 
 def get_hand_value_part_2(hand: str) -> int:
     replacement_hand = ""
-    most_common = Counter(hand).most_common()[0]
+    most_common = Counter(hand).most_common()
+    # Single step to modify list in place and remove Js
+    [most_common.remove(c) for c in most_common if c[0] == "J"]
+    # This step uses a lambda to order the resulting hand in terms of value from the original dict
+    # This could be done more simply by storing the original keys as an ordered string
+    # We reverse it since a lower index is required here (e.g. higher value cards should be first)
+    sorted(
+        most_common, key=lambda x: list(FACE_VALUES.keys()).index(x[0]), reverse=True
+    )
+    # Whoops! Here's an edge case
+    if hand == "JJJJJ":
+        print("JJJJ hand!")
+        return get_hand_value(hand)
     for letter in hand:
         new_letter = letter
-        if letter == "J" and most_common[1] != 1:
-            new_letter = most_common[0]
+        if letter == "J":
+            new_letter = most_common[0][0]
         replacement_hand = replacement_hand + new_letter
     return get_hand_value(replacement_hand)
 
