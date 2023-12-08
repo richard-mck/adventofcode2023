@@ -62,4 +62,11 @@ if __name__ == "__main__":
             if instruction == "R":
                 goal = nodes[goal].right
     print(tally)
+    # part 2!
+    print("Part 2!")
+    tally = 0
+    sample = load_input("example_2.txt")
+    instructions = sample[0].rstrip()
+    print(f"Instructions {instructions}")
+    nodes = parse_nodes(sample[2:])
     pass
