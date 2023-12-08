@@ -51,4 +51,15 @@ if __name__ == "__main__":
     sample = load_input("example_a.txt")
     instructions = sample[0].rstrip()
     print(instructions)
+    nodes = parse_nodes(sample[2:])
+    goal = "AAA"
+    tally = 0
+    while goal != "ZZZ":
+        for instruction in instructions:
+            tally += 1
+            if instruction == "L":
+                goal = nodes[goal].left
+            if instruction == "R":
+                goal = nodes[goal].right
+    print(tally)
     pass
