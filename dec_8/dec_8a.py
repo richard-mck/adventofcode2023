@@ -31,9 +31,15 @@ ZZZ = (ZZZ, ZZZ)
 Starting at AAA, follow the left/right instructions. How many steps are required to reach ZZZ?
 """
 
+from collections import namedtuple
+from re import findall
+
 from common_functions import load_input
 
+Node = namedtuple("Node", "name left right")
+
 if __name__ == "__main__":
-    sample_a = load_input("example_a.txt")
-    sample_b = load_input("example_b.txt")
+    sample = load_input("example_a.txt")
+    instructions = sample[0].rstrip()
+    print(instructions)
     pass
