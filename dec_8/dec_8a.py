@@ -74,4 +74,17 @@ if __name__ == "__main__":
     instructions = sample[0].rstrip()
     print(f"Instructions {instructions}")
     nodes = parse_nodes(sample[2:])
+    check_nodes = [nodes[node] for node in nodes if nodes[node].name.endswith("A")]
+    print(f"Starting nodes: {check_nodes}")
+    while not (reached_goal(check_nodes)):
+        for instruction in instructions:
+            tally += 1
+            for i, _ in enumerate(check_nodes):
+                print(check_nodes[i])
+                if instruction == "L":
+                    goal = nodes[check_nodes[i].name].left
+                if instruction == "R":
+                    goal = nodes[check_nodes[i].name].right
+                check_nodes[i] = nodes[goal]
+    print(tally)
     pass
