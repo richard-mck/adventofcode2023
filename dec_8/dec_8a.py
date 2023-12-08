@@ -52,20 +52,25 @@ def reached_goal(nodes: list[Node]) -> bool:
     return len(true_tally) == len(nodes)
 
 
+def get_next_node(node: Node, direction: str) -> str:
+    if direction == "L":
+        return node.left
+    if direction == "R":
+        return node.right
+
+
 if __name__ == "__main__":
     sample = load_input("example_a.txt")
     instructions = sample[0].rstrip()
     print(instructions)
     nodes = parse_nodes(sample[2:])
-    goal = "AAA"
+    goal = nodes["AAA"]
     tally = 0
-    while goal != "ZZZ":
+    while goal.name != "ZZZ":
         for instruction in instructions:
             tally += 1
-            if instruction == "L":
-                goal = nodes[goal].left
-            if instruction == "R":
-                goal = nodes[goal].right
+            next_node = get_next_node(nodes[goal.name], instruction)
+            goal = nodes[next_node]
     print(tally)
     # part 2!
     print("Part 2!")
