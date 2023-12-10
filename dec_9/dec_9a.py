@@ -78,6 +78,15 @@ Analyze your OASIS report and extrapolate the next value for each history. What 
 
 from common_functions import load_input
 
+
+def parse_data_to_ints(data: list[str]) -> list[list[int]]:
+    return [list(map(int, row.split())) for row in data]
+
+
+def get_sequence_steps(sequence: list[int]) -> list[int]:
+    return [sequence[i + 1] - sequence[i] for i, _ in enumerate(sequence[0:-1])]
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     pass
