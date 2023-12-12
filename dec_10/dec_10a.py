@@ -121,6 +121,7 @@ RAW_PIPES = [
     ".",  # is ground; there is no pipe in this tile.
     "S",  # is the starting position of the animal; there is a pipe on this tile
 ]
+
 # fmt: off
 VALID_PIPES = {
     "|": Pipe(["north", "south"], "│"),  # is a vertical pipe connecting north and south.
@@ -133,6 +134,25 @@ VALID_PIPES = {
     "S": Pipe([], "S"),  # is the starting position of the animal; there is a pipe on this tile
 }
 
+
+def parse_input_data(data: list[str]) -> (list[list[Pipe]], tuple):
+    pipes = []
+    for y,_ in enumerate(data):
+        row = []
+        for x,_ in enumerate(data[y]):
+            if data[y][x] == "S":
+                start_pos = (x,y)
+            elif data[y][x] == "\n":
+                continue
+            row.append(VALID_PIPES[data[y][x]])
+        pipes.append(row)
+    return pipes, start_pos
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
+    maze, start = parse_input_data(data)
+    print(f"Start: {start}")
+    for row in maze:
+        print("".join(i.symbol for i in row))
     pass
