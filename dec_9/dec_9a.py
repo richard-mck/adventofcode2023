@@ -87,6 +87,17 @@ def get_previous_sequence(sequence: list[int]) -> list[int]:
     return [sequence[i + 1] - sequence[i] for i, _ in enumerate(sequence[0:-1])]
 
 
+def iterate_over_sequences(sequence: list[int]) -> list[int]:
+    history = [sequence]
+    print(f"Initial sequence: {sequence}")
+    while sum(sequence) != 0:
+        sequence = get_previous_sequence(sequence)
+        print(f"Iteration: {sequence}")
+        history.append(sequence)
+    print(f"Histories: {history}")
+    return [i[-1] for i in history]
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     pass
