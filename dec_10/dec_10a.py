@@ -165,13 +165,23 @@ def parse_input_data(data: list[str]) -> (list[list[MapTile]], Point):
         pipes.append(row)
     return pipes, start_pos
 
-def check_first_position(maze: list[list[Pipe]], start: Point, ) -> list[str]:
+
+def check_next_position(
+    directions: list[str],
+    maze: list[list[MapTile]],
+    start: Point,
+) -> (list[str], list[Point]):
     valid_directions = []
-    for move in NEXT_COMPASS_MOVE:
-        # TODO: this isn't valid - since | contains both north and south it will return both north and south!
-        if move in maze[start.y + NEXT_COMPASS_MOVE[move].y][start.x + NEXT_COMPASS_MOVE[move].x].valid_next_positions:
+    valid_points = []
+    for move in directions:
+        direction = DIRECTION_TRANSFORM[move]
+        check_tile = maze[start.y + NEXT_MOVE[move].y][start.x + NEXT_MOVE[move].x]
+        if direction in check_tile.pipe.valid_next_positions:
             valid_directions.append(move)
-    return valid_directions
+            valid_points.append(check_tile)
+    return valid_directions, valid_points
+
+
 def print_maze(current_pos: list[MapTile], maze: list[list[MapTile]]):
     for row in maze:
         for item in row:
@@ -190,8 +200,6 @@ if __name__ == "__main__":
     print(f"Start: {start}")
     for row in maze:
         print("".join(i.pipe.symbol for i in row))
-    moves = check_first_position(maze, start)
-    print(moves)
     print_maze([maze[1][1]], maze)
     starting_directions = [
         "north",
@@ -199,4 +207,7 @@ if __name__ == "__main__":
         "south",
         "west",
     ]
+    moves, pipes = check_next_position(starting_directions, maze, start)
+    print(moves, pipes)
+
     pass
