@@ -159,6 +159,7 @@ def parse_input_data(data: list[str]) -> (list[list[Pipe]], Point):
 def check_first_position(maze: list[list[Pipe]], start: Point, ) -> list[str]:
     valid_directions = []
     for move in NEXT_COMPASS_MOVE:
+        # TODO: this isn't valid - since | contains both north and south it will return both north and south!
         if move in maze[start.y + NEXT_COMPASS_MOVE[move].y][start.x + NEXT_COMPASS_MOVE[move].x].valid_next_positions:
             valid_directions.append(move)
     return valid_directions
@@ -171,4 +172,5 @@ if __name__ == "__main__":
     for row in maze:
         print("".join(i.symbol for i in row))
     moves = check_first_position(maze, start)
+    print(moves)
     pass
