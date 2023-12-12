@@ -109,3 +109,14 @@ if __name__ == "__main__":
         print(histories)
         total += sum(histories)
         print(total)
+
+    print("Part 2!")
+    print(f"Initial data: {data}")
+    [row.reverse() for row in data]
+    print(f"Initial data: {data}")
+    total = 0
+    for row in data:
+        histories = iterate_over_sequences(row)
+        print(histories)
+        total += sum(histories)
+        print(total)
