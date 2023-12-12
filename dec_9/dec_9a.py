@@ -83,7 +83,7 @@ def parse_data_to_ints(data: list[str]) -> list[list[int]]:
     return [list(map(int, row.split())) for row in data]
 
 
-def get_sequence_steps(sequence: list[int]) -> list[int]:
+def get_previous_sequence(sequence: list[int]) -> list[int]:
     return [sequence[i + 1] - sequence[i] for i, _ in enumerate(sequence[0:-1])]
 
 
