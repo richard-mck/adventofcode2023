@@ -110,6 +110,7 @@ from collections import namedtuple
 from common_functions import load_input
 
 Pipe = namedtuple("Pipe", "valid_next_positions symbol")
+Point = namedtuple("Point", "x y")
 
 RAW_PIPES = [
     "|",  # is a vertical pipe connecting north and south.
@@ -131,17 +132,24 @@ VALID_PIPES = {
     "7": Pipe(["south", "west"], "┐"),  # is a 90-degree bend connecting south and west.
     "F": Pipe(["south", "east"], "Г"),  # is a 90-degree bend connecting south and east.
     ".": Pipe([], " "),  # is ground; there is no pipe in this tile.
-    "S": Pipe([], "S"),  # is the starting position of the animal; there is a pipe on this tile
+    "S": Pipe(["north", "south", "east", "west"], "S"),  # is the starting position of the animal; there is a pipe on this tile
+}
+
+NEXT_COMPASS_MOVE = {
+    "north": Point(0, -1),
+    "east": Point(1, 0),
+    "south": Point(0, 1),
+    "west": Point(-1, 0),
 }
 
 
-def parse_input_data(data: list[str]) -> (list[list[Pipe]], tuple):
+def parse_input_data(data: list[str]) -> (list[list[Pipe]], Point):
     pipes = []
     for y,_ in enumerate(data):
         row = []
         for x,_ in enumerate(data[y]):
             if data[y][x] == "S":
-                start_pos = (x,y)
+                start_pos = Point(x,y)
             elif data[y][x] == "\n":
                 continue
             row.append(VALID_PIPES[data[y][x]])
