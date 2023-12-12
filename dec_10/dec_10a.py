@@ -182,6 +182,18 @@ def check_next_position(
     return valid_directions, valid_points
 
 
+def get_next_tile(
+    dir: str, maze: list[list[MapTile]], current: MapTile
+) -> (str, MapTile):
+    next_x = current.point.x + NEXT_MOVE[dir].x
+    next_y = current.point.y + NEXT_MOVE[dir].y
+    next_tile = maze[next_y][next_x]
+    # The direction is flipped since we need to find the direction of travel, not the direction of arrival
+    dir = DIRECTION_TRANSFORM[dir]
+    next_dir = [i for i in next_tile.pipe.valid_next_positions if i not in dir][0]
+    return next_dir, next_tile
+
+
 def print_maze(current_pos: list[MapTile], maze: list[list[MapTile]]):
     for row in maze:
         for item in row:
