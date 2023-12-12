@@ -135,25 +135,33 @@ VALID_PIPES = {
     ".": Pipe([], " "),  # is ground; there is no pipe in this tile.
     "S": Pipe(["north", "south", "east", "west"], "S"),  # is the starting position of the animal; there is a pipe on this tile
 }
+# fmt: on
 
-NEXT_COMPASS_MOVE = {
+NEXT_MOVE = {
     "north": Point(0, -1),
     "east": Point(1, 0),
     "south": Point(0, 1),
     "west": Point(-1, 0),
 }
 
+DIRECTION_TRANSFORM = {
+    "north": "south",
+    "east": "west",
+    "south": "north",
+    "west": "east",
+}
+
 
 def parse_input_data(data: list[str]) -> (list[list[MapTile]], Point):
     pipes = []
-    for y,_ in enumerate(data):
+    for y in range(len(data)):
         row = []
-        for x,_ in enumerate(data[y]):
+        for x in range(len(data[y])):
             if data[y][x] == "S":
-                start_pos = Point(x,y)
+                start_pos = Point(x, y)
             elif data[y][x] == "\n":
                 continue
-            row.append(MapTile(VALID_PIPES[data[y][x]], Point(x,y)))
+            row.append(MapTile(VALID_PIPES[data[y][x]], Point(x, y)))
         pipes.append(row)
     return pipes, start_pos
 
@@ -164,6 +172,16 @@ def check_first_position(maze: list[list[Pipe]], start: Point, ) -> list[str]:
         if move in maze[start.y + NEXT_COMPASS_MOVE[move].y][start.x + NEXT_COMPASS_MOVE[move].x].valid_next_positions:
             valid_directions.append(move)
     return valid_directions
+def print_maze(current_pos: list[MapTile], maze: list[list[MapTile]]):
+    for row in maze:
+        for item in row:
+            if item in current_pos:
+                print("*", end="")
+            elif item is row[-1]:
+                print(item.pipe.symbol)
+            else:
+                print(item.pipe.symbol, end="")
+    print()
 
 
 if __name__ == "__main__":
@@ -174,4 +192,11 @@ if __name__ == "__main__":
         print("".join(i.pipe.symbol for i in row))
     moves = check_first_position(maze, start)
     print(moves)
+    print_maze([maze[1][1]], maze)
+    starting_directions = [
+        "north",
+        "east",
+        "south",
+        "west",
+    ]
     pass
