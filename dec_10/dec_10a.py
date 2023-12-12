@@ -111,6 +111,7 @@ from common_functions import load_input
 
 Pipe = namedtuple("Pipe", "valid_next_positions symbol")
 Point = namedtuple("Point", "x y")
+MapTile = namedtuple("MapTile", "pipe point")
 
 RAW_PIPES = [
     "|",  # is a vertical pipe connecting north and south.
@@ -143,7 +144,7 @@ NEXT_COMPASS_MOVE = {
 }
 
 
-def parse_input_data(data: list[str]) -> (list[list[Pipe]], Point):
+def parse_input_data(data: list[str]) -> (list[list[MapTile]], Point):
     pipes = []
     for y,_ in enumerate(data):
         row = []
@@ -152,7 +153,7 @@ def parse_input_data(data: list[str]) -> (list[list[Pipe]], Point):
                 start_pos = Point(x,y)
             elif data[y][x] == "\n":
                 continue
-            row.append(VALID_PIPES[data[y][x]])
+            row.append(MapTile(VALID_PIPES[data[y][x]], Point(x,y)))
         pipes.append(row)
     return pipes, start_pos
 
@@ -170,7 +171,7 @@ if __name__ == "__main__":
     maze, start = parse_input_data(data)
     print(f"Start: {start}")
     for row in maze:
-        print("".join(i.symbol for i in row))
+        print("".join(i.pipe.symbol for i in row))
     moves = check_first_position(maze, start)
     print(moves)
     pass
