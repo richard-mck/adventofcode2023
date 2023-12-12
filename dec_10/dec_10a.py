@@ -156,6 +156,13 @@ def parse_input_data(data: list[str]) -> (list[list[Pipe]], Point):
         pipes.append(row)
     return pipes, start_pos
 
+def check_first_position(maze: list[list[Pipe]], start: Point, ) -> list[str]:
+    valid_directions = []
+    for move in NEXT_COMPASS_MOVE:
+        if move in maze[start.y + NEXT_COMPASS_MOVE[move].y][start.x + NEXT_COMPASS_MOVE[move].x].valid_next_positions:
+            valid_directions.append(move)
+    return valid_directions
+
 
 if __name__ == "__main__":
     data = load_input("example.txt")
@@ -163,4 +170,5 @@ if __name__ == "__main__":
     print(f"Start: {start}")
     for row in maze:
         print("".join(i.symbol for i in row))
+    moves = check_first_position(maze, start)
     pass
