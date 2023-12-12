@@ -100,4 +100,12 @@ def iterate_over_sequences(sequence: list[int]) -> list[int]:
 
 if __name__ == "__main__":
     data = load_input("example.txt")
-    pass
+    print(data)
+    data = parse_data_to_ints(data)
+    print(data)
+    total = 0
+    for row in data:
+        histories = iterate_over_sequences(row)
+        print(histories)
+        total += sum(histories)
+        print(total)
