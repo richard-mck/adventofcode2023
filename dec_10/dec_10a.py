@@ -218,4 +218,22 @@ if __name__ == "__main__":
         current_tile = get_next_tiles(maze, current_tile, prev)
     print_maze(maze_tiles, maze, loop_only=True)
     print(len(maze_tiles) // 2)
-    pass
+    # Part 2
+    points = [i.point for i in maze_tiles]
+    area = 0
+    # Using the shoelace formula - https://en.wikipedia.org/wiki/Shoelace_formula
+    # combined with Pick's theorem - https://en.wikipedia.org/wiki/Pick's_theorem
+    # Pick's theorem: A = i + (b/2) - 1, where
+    #  - A = area = 1/2 ((X1Y2 - X2Y1) + ... + (XnYn+1 - Xn+1Yn))
+    #  - i = interior points - what we're solving for
+    #  - b = boundary points (e.g. number of loop tiles)
+    # Therefore: i = A - (b/2) + 1
+    boundary_points = len(points)
+    for i in range(0, boundary_points - 1):
+        area_n = (points[i].x * points[i + 1].y) - (points[i + 1].x * points[i].y)
+        area += area_n
+    # For the final point in the matrix, we must consider Xn,Yn and X0,Y0 to complete the boundary
+    area += (points[-1].x * points[0].y) - (points[0].x * points[-1].y)
+    area = abs(area / 2)
+    internal = area - (boundary_points / 2) + 1
+    print(f"A:{area}, b:{boundary_points}, i:{internal}")
