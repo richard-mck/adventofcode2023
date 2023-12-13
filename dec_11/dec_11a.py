@@ -100,6 +100,28 @@ lengths?
 
 from common_functions import load_input
 
+
+def expand_universe(raw_data: list[str]) -> list[list[str]]:
+    modified_data = []
+    for row in raw_data:
+        if "#" not in row:
+            modified_data.append(list(row))
+        modified_data.append(list(row))
+    raw_data = modified_data
+    transposed_data = [
+        [raw_data[j][i] for j in range(len(raw_data))] for i in range(len(raw_data[0]))
+    ]
+    transposed_data = [
+        i for i in range(0, len(transposed_data)) if "#" not in transposed_data[i]
+    ]
+    modified_data = []
+    for row in raw_data:
+        for item in transposed_data:
+            row.insert(item + transposed_data.index(item), ".")
+        modified_data.append(row)
+    return modified_data
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     pass
