@@ -98,6 +98,8 @@ Expand the universe, then find the length of the shortest path between every pai
 lengths?
 """
 
+import pprint
+
 from common_functions import load_input
 
 
@@ -123,5 +125,17 @@ def expand_universe(raw_data: list[str]) -> list[list[str]]:
 
 
 if __name__ == "__main__":
-    data = load_input("example.txt")
+    filename = "example.txt"
+    data = load_input(filename)
+    universe = expand_universe(data)
+    pprint.pprint(universe)
+    print(f"rows: {len(universe)}, cols: {len(universe[0])}")
+
+    if filename == "example.txt":
+        matched_data = load_input("example_expanded.txt")
+        for i in range(len(matched_data)):
+            assert matched_data[i] == "".join(universe[i])
+        assert len(universe) == 12
+        assert len(universe[0]) == 13
+
     pass
