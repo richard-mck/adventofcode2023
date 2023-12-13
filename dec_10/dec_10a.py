@@ -131,7 +131,7 @@ VALID_PIPES = {
     "L": Pipe(["north", "east"], "└"),  # is a 90-degree bend connecting north and east.
     "J": Pipe(["north", "west"], "┘"),  # is a 90-degree bend connecting north and west.
     "7": Pipe(["south", "west"], "┐"),  # is a 90-degree bend connecting south and west.
-    "F": Pipe(["south", "east"], "Г"),  # is a 90-degree bend connecting south and east.
+    "F": Pipe(["south", "east"], "┌"),  # is a 90-degree bend connecting south and east.
     ".": Pipe([], " "),  # is ground; there is no pipe in this tile.
     "S": Pipe(["north", "south", "east", "west"], "S"),  # is the starting position of the animal; there is a pipe on this tile
 }
@@ -194,17 +194,25 @@ def get_next_tile(
     return next_dir, next_tile
 
 
-def print_maze(current_pos: list[MapTile], maze: list[list[MapTile]]):
+def get_next_tile2(maze: list[list[MapTile]], curr: MapTile, prev: MapTile) -> MapTile:
+    moves = curr.pipe.valid_next_positions
+    next_x_a = curr.point.x + NEXT_MOVE[moves[0]].x
+    next_y_a = curr.point.y + NEXT_MOVE[moves[0]].y
+    next_tile_a = maze[next_y_a][next_x_a]
+    next_x_b = curr.point.x + NEXT_MOVE[moves[1]].x
+    next_y_b = curr.point.y + NEXT_MOVE[moves[1]].y
+    next_tile_b = maze[next_y_b][next_x_b]
+    if next_tile_b == prev:
+        return next_tile_a
+    else:
+        return next_tile_b
+
+
 def print_maze(current_pos: list[MapTile], maze: list[list[MapTile]], loop_only=False):
     for row in maze:
         for item in row:
-            if item in current_pos:
-                print("*", end="")
-            elif item is row[-1]:
-                print(item.pipe.symbol)
-            else:
-                print(item.pipe.symbol, end="")
             symbol = item.pipe.symbol
+            if loop_only and item not in current_pos:
                 symbol = " "
             elif not loop_only and item in current_pos:
                 symbol = "*"
@@ -219,18 +227,6 @@ if __name__ == "__main__":
     maze, start = parse_input_data(data)
     start = MapTile(VALID_PIPES["S"], start)
     print(f"Start: {start}")
-    for row in maze:
-        print("".join(i.pipe.symbol for i in row))
-    print_maze([maze[1][1]], maze)
-    starting_directions = [
-        "north",
-        "east",
-        "south",
-        "west",
-    ]
-    moves, pipes = check_next_position(starting_directions, maze, start)
-    print(moves, pipes)
-
     print_maze([maze[start.point.y][start.point.x]], maze)
     moves, tiles = check_next_position(NEXT_MOVE.keys(), maze, start.point)
     print(f"Starting moves: {moves}, starting tiles: {tiles}")
@@ -247,4 +243,19 @@ if __name__ == "__main__":
         print(distance)
         if maze_loop_a[i] == maze_loop_b[i]:
             break
+    # start = maze[start.y][start.x]
+    prev = start
+    next_tile = tile
+    count = 1
+    maze_tiles = []
+    while next_tile != start:
+        print_maze([next_tile], maze)
+        current_tile = next_tile
+        next_tile = get_next_tile2(maze, current_tile, prev)
+        maze_tiles.append(current_tile)
+        prev = current_tile
+        print(count)
+        count += 1
+    print_maze(maze_tiles, maze, loop_only=True)
+    print(count // 2)
     pass
