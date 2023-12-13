@@ -122,13 +122,22 @@ def expand_universe(raw_data: list[str]) -> list[list[str]]:
     return modified_data
 
 
+def enumerate_galaxies(input_data: list[list[str]]) -> tuple[list[list[str]], int]:
+    counter = 0
+    for i in range(len(input_data)):
+        for j in range(len(input_data[i])):
+            if input_data[i][j] == "#":
+                counter += 1
+                input_data[i][j] = str(counter)
+    return input_data, counter
+
+
 if __name__ == "__main__":
     filename = "example.txt"
     data = load_input(filename)
+
     universe = expand_universe(data)
     pprint.pprint(universe)
-    print(f"rows: {len(universe)}, cols: {len(universe[0])}")
-
     if filename == "example.txt":
         matched_data = load_input("example_expanded.txt")
         for i in range(len(matched_data)):
@@ -136,4 +145,6 @@ if __name__ == "__main__":
         assert len(universe) == 12
         assert len(universe[0]) == 13
 
-    pass
+    numbered_universe, galaxy_count = enumerate_galaxies(universe)
+    pprint.pprint(numbered_universe)
+    print(galaxy_count)
