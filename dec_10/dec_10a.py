@@ -113,17 +113,6 @@ Pipe = namedtuple("Pipe", "valid_next_positions symbol")
 Point = namedtuple("Point", "x y")
 MapTile = namedtuple("MapTile", "pipe point")
 
-RAW_PIPES = [
-    "|",  # is a vertical pipe connecting north and south.
-    "-",  # is a horizontal pipe connecting east and west.
-    "L",  # is a 90-degree bend connecting north and east.
-    "J",  # is a 90-degree bend connecting north and west.
-    "7",  # is a 90-degree bend connecting south and west.
-    "F",  # is a 90-degree bend connecting south and east.
-    ".",  # is ground; there is no pipe in this tile.
-    "S",  # is the starting position of the animal; there is a pipe on this tile
-]
-
 # fmt: off
 VALID_PIPES = {
     "|": Pipe(["north", "south"], "│"),  # is a vertical pipe connecting north and south.
@@ -182,18 +171,6 @@ def check_next_position(
     return valid_directions, valid_points
 
 
-def get_next_tile(
-    dir: str, maze: list[list[MapTile]], current: MapTile
-) -> (str, MapTile):
-    next_x = current.point.x + NEXT_MOVE[dir].x
-    next_y = current.point.y + NEXT_MOVE[dir].y
-    next_tile = maze[next_y][next_x]
-    # The direction is flipped since we need to find the direction of travel, not the direction of arrival
-    dir = DIRECTION_TRANSFORM[dir]
-    next_dir = [i for i in next_tile.pipe.valid_next_positions if i not in dir][0]
-    return next_dir, next_tile
-
-
 def get_next_tiles(
     maze: list[list[MapTile]], curr: MapTile, prev: MapTile
 ) -> list[MapTile]:
@@ -229,23 +206,10 @@ if __name__ == "__main__":
     maze, start = parse_input_data(data)
     start = MapTile(VALID_PIPES["S"], start)
     print(f"Start: {start}")
-    print_maze([maze[start.point.y][start.point.x]], maze)
     moves, tiles = check_next_position(NEXT_MOVE.keys(), maze, start.point)
     print(f"Starting moves: {moves}, starting tiles: {tiles}")
     move = moves[0]
     tile = tiles[0]
-    maze_loop_a = find_loop_in_maze(move, maze, tile, start)
-    maze_loop_b = maze_loop_a.copy()
-    maze_loop_b.reverse()
-    print(maze_loop_a)
-    print_maze(maze_loop_a, maze, loop_only=True)
-    distance = 0
-    for i in range(len(maze_loop_a)):
-        distance += 1
-        print(distance)
-        if maze_loop_a[i] == maze_loop_b[i]:
-            break
-    # start = maze[start.y][start.x]
     current_tile = tile
     maze_tiles = [start]
     while current_tile != start:
