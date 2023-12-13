@@ -194,7 +194,9 @@ def get_next_tile(
     return next_dir, next_tile
 
 
-def get_next_tile2(maze: list[list[MapTile]], curr: MapTile, prev: MapTile) -> MapTile:
+def get_next_tiles(
+    maze: list[list[MapTile]], curr: MapTile, prev: MapTile
+) -> list[MapTile]:
     moves = curr.pipe.valid_next_positions
     next_x_a = curr.point.x + NEXT_MOVE[moves[0]].x
     next_y_a = curr.point.y + NEXT_MOVE[moves[0]].y
@@ -244,18 +246,12 @@ if __name__ == "__main__":
         if maze_loop_a[i] == maze_loop_b[i]:
             break
     # start = maze[start.y][start.x]
-    prev = start
-    next_tile = tile
-    count = 1
-    maze_tiles = []
-    while next_tile != start:
-        print_maze([next_tile], maze)
-        current_tile = next_tile
-        next_tile = get_next_tile2(maze, current_tile, prev)
+    current_tile = tile
+    maze_tiles = [start]
+    while current_tile != start:
+        prev = maze_tiles[-1]
         maze_tiles.append(current_tile)
-        prev = current_tile
-        print(count)
-        count += 1
+        current_tile = get_next_tiles(maze, current_tile, prev)
     print_maze(maze_tiles, maze, loop_only=True)
-    print(count // 2)
+    print(len(maze_tiles) // 2)
     pass
