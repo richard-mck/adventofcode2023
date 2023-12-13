@@ -195,6 +195,7 @@ def get_next_tile(
 
 
 def print_maze(current_pos: list[MapTile], maze: list[list[MapTile]]):
+def print_maze(current_pos: list[MapTile], maze: list[list[MapTile]], loop_only=False):
     for row in maze:
         for item in row:
             if item in current_pos:
@@ -203,12 +204,20 @@ def print_maze(current_pos: list[MapTile], maze: list[list[MapTile]]):
                 print(item.pipe.symbol)
             else:
                 print(item.pipe.symbol, end="")
+            symbol = item.pipe.symbol
+                symbol = " "
+            elif not loop_only and item in current_pos:
+                symbol = "*"
+            if item is row[-1]:
+                symbol = symbol + "\n"
+            print(symbol, end="")
     print()
 
 
 if __name__ == "__main__":
     data = load_input("example.txt")
     maze, start = parse_input_data(data)
+    start = MapTile(VALID_PIPES["S"], start)
     print(f"Start: {start}")
     for row in maze:
         print("".join(i.pipe.symbol for i in row))
@@ -222,4 +231,20 @@ if __name__ == "__main__":
     moves, pipes = check_next_position(starting_directions, maze, start)
     print(moves, pipes)
 
+    print_maze([maze[start.point.y][start.point.x]], maze)
+    moves, tiles = check_next_position(NEXT_MOVE.keys(), maze, start.point)
+    print(f"Starting moves: {moves}, starting tiles: {tiles}")
+    move = moves[0]
+    tile = tiles[0]
+    maze_loop_a = find_loop_in_maze(move, maze, tile, start)
+    maze_loop_b = maze_loop_a.copy()
+    maze_loop_b.reverse()
+    print(maze_loop_a)
+    print_maze(maze_loop_a, maze, loop_only=True)
+    distance = 0
+    for i in range(len(maze_loop_a)):
+        distance += 1
+        print(distance)
+        if maze_loop_a[i] == maze_loop_b[i]:
+            break
     pass
