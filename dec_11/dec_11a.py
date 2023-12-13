@@ -116,11 +116,9 @@ def expand_universe(raw_data: list[str]) -> list[list[str]]:
     transposed_data = [
         i for i in range(0, len(transposed_data)) if "#" not in transposed_data[i]
     ]
-    modified_data = []
-    for row in raw_data:
+    for i in range(len(modified_data)):
         for item in transposed_data:
-            row.insert(item + transposed_data.index(item), ".")
-        modified_data.append(row)
+            modified_data[i].insert(item + transposed_data.index(item), ".")
     return modified_data
 
 
