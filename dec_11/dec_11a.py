@@ -132,6 +132,17 @@ def enumerate_galaxies(input_data: list[list[str]]) -> tuple[list[list[str]], in
     return input_data, counter
 
 
+def calculate_distance(galaxy_map: list[list[str]], start: int, end: int) -> float:
+    for row, col in enumerate(galaxy_map):
+        if str(start) in col:
+            start_pos = (row, col.index(str(start)))
+        if str(end) in col:
+            end_pos = (row, col.index(str(end)))
+    dx = abs(start_pos[0] - end_pos[0])
+    dy = abs(start_pos[1] - end_pos[1])
+    return dx + dy
+
+
 if __name__ == "__main__":
     filename = "example.txt"
     data = load_input(filename)
@@ -147,4 +158,3 @@ if __name__ == "__main__":
 
     numbered_universe, galaxy_count = enumerate_galaxies(universe)
     pprint.pprint(numbered_universe)
-    print(galaxy_count)
