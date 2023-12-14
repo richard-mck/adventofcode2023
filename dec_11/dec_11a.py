@@ -143,6 +143,16 @@ def calculate_distance(galaxy_map: list[list[str]], start: int, end: int) -> flo
     return dx + dy
 
 
+def get_galactic_distances(galaxy_map: list[list[str]], start: int):
+    distances = []
+    for i in range(1, start + 1):
+        for j in range(i, start + 1):
+            if i == j:
+                continue
+            distances.append(calculate_distance(galaxy_map, i, j))
+    print(sum(distances))
+
+
 if __name__ == "__main__":
     filename = "example.txt"
     data = load_input(filename)
@@ -158,3 +168,5 @@ if __name__ == "__main__":
 
     numbered_universe, galaxy_count = enumerate_galaxies(universe)
     pprint.pprint(numbered_universe)
+
+    get_galactic_distances(numbered_universe, galaxy_count)
