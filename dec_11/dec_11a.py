@@ -105,27 +105,15 @@ from common_functions import load_input
 Point = namedtuple("Point", "x y")
 
 
-def expand_universe(
-    raw_data: list[str],
-) -> tuple[list[list[str]], list[int], list[int]]:
-    modified_data = []
+def get_empty_row_cols(raw_data: list[str]) -> tuple[list[int], list[int]]:
     empty_rows = [i for i in range(len(raw_data)) if "#" not in raw_data[i]]
-    for row in raw_data:
-        if "#" not in row:
-            modified_data.append(list(row))
-        modified_data.append(list(row))
-    raw_data = modified_data
     transposed_data = [
         [raw_data[j][i] for j in range(len(raw_data))] for i in range(len(raw_data[0]))
     ]
-    transposed_data = [
+    empty_cols = [
         i for i in range(0, len(transposed_data)) if "#" not in transposed_data[i]
     ]
-    empty_cols = transposed_data
-    for i in range(len(modified_data)):
-        for item in transposed_data:
-            modified_data[i].insert(item + transposed_data.index(item), ".")
-    return modified_data, empty_rows, empty_cols
+    return empty_rows, empty_cols
 
 
 def enumerate_galaxies(input_data: list[list[str]]) -> tuple[dict, int]:
@@ -162,7 +150,6 @@ def enumerate_galaxies_with_expansion(
 def calculate_distance(galaxy_map: dict, start: int, end: int) -> int:
     dx = abs(galaxy_map[start].x - galaxy_map[end].x)
     dy = abs(galaxy_map[start].y - galaxy_map[end].y)
-    print(f"{start} -> {end} distance {dx}x + {dy}y")
     return dx + dy
 
 
@@ -180,34 +167,31 @@ if __name__ == "__main__":
     filename = "example.txt"
     data = load_input(filename)
 
-    universe, null_rows, null_cols = expand_universe(data)
+    null_rows, null_cols = get_empty_row_cols(data)
     print(f"empty rows {null_rows}, empty_cols {null_cols}")
-    if filename == "example.txt":
-        matched_data = load_input("example_expanded.txt")
-        for i in range(len(matched_data)):
-            assert matched_data[i] == "".join(universe[i])
-        assert len(universe) == 12
-        assert len(universe[0]) == 13
-
-    numbered_universe, galaxy_count = enumerate_galaxies(universe)
-
-    get_galactic_distances(numbered_universe, galaxy_count)
+    universe, galaxy_count = enumerate_galaxies_with_expansion(
+        data, null_rows, null_cols
+    )
+    get_galactic_distances(universe, galaxy_count)
 
     # Part two
+    print("PART 2!")
     # Recalculate original galaxy positions to set up offset calcs
-    second_universe, galaxy_count = enumerate_galaxies(data)
-    print(second_universe)
-    for item in second_universe:
-        print(f"Galaxy: {item} - {second_universe[item]}")
-        x_count = [i for i in null_cols if i < second_universe[item].x]
-
-        y_count = [i for i in null_rows if i < second_universe[item].y]
-        print(x_count, y_count)
-        second_universe[item] = Point(
-            second_universe[item].x + 10 * len(x_count),
-            second_universe[item].y + 10 * len(y_count),
-        )
-        print(f"Updated galaxy: {item} - {second_universe[item]}")
-    print(galaxy_count)
-    print(second_universe)
-    get_galactic_distances(second_universe, galaxy_count)
+    test_universe, test_galaxy_count = enumerate_galaxies_with_expansion(
+        data, null_rows, null_cols
+    )
+    get_galactic_distances(test_universe, test_galaxy_count)  # Prints 374 for example
+    test_universe, test_galaxy_count = enumerate_galaxies_with_expansion(
+        data, null_rows, null_cols, offset=9
+    )
+    get_galactic_distances(test_universe, test_galaxy_count)  # Prints 1030 for example
+    test_universe, test_galaxy_count = enumerate_galaxies_with_expansion(
+        data, null_rows, null_cols, offset=99
+    )
+    get_galactic_distances(test_universe, test_galaxy_count)  # Prints 8410 for example
+    test_universe, test_galaxy_count = enumerate_galaxies_with_expansion(
+        data, null_rows, null_cols, offset=999999
+    )
+    get_galactic_distances(
+        test_universe, test_galaxy_count
+    )  # Prints 82000210 for example
