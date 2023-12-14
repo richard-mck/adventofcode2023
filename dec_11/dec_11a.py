@@ -139,6 +139,26 @@ def enumerate_galaxies(input_data: list[list[str]]) -> tuple[dict, int]:
     return galaxy_dict, counter
 
 
+def enumerate_galaxies_with_expansion(
+    input_data: list[list[str]], empty_rows: list[int], empty_cols: list[int], offset=1
+) -> tuple[dict, int]:
+    galaxy_counter = 0
+    empty_x = 0
+    empty_y = 0
+    galaxy_dict = {}
+    for i in range(len(input_data)):
+        if i in empty_rows:
+            empty_y += offset
+        for j in range(len(input_data[i])):
+            if j in empty_cols:
+                empty_x += offset
+            if input_data[i][j] == "#":
+                galaxy_counter += 1
+                galaxy_dict[galaxy_counter] = Point(j + empty_x, i + empty_y)
+        empty_x = 0
+    return galaxy_dict, galaxy_counter
+
+
 def calculate_distance(galaxy_map: dict, start: int, end: int) -> int:
     dx = abs(galaxy_map[start].x - galaxy_map[end].x)
     dy = abs(galaxy_map[start].y - galaxy_map[end].y)
