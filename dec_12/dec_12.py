@@ -72,8 +72,15 @@ For each row, count all of the different arrangements of operational and broken 
 What is the sum of those counts?
 """
 
+from collections import namedtuple
+
 from common_functions import load_input
+SpringGroup = namedtuple("SpringGroup", "condition_log working_items")
+def parse_group(group: str) -> SpringGroup:
+    group = group.split()
+    return SpringGroup(group[0], [int(i) for i in group[1].split(",")])
 
 if __name__ == "__main__":
     data = load_input("example.txt")
+    springs = [parse_group(row) for row in data]
     pass
