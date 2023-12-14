@@ -103,8 +103,11 @@ import pprint
 from common_functions import load_input
 
 
-def expand_universe(raw_data: list[str]) -> list[list[str]]:
+def expand_universe(
+    raw_data: list[str],
+) -> tuple[list[list[str]], list[int], list[int]]:
     modified_data = []
+    empty_rows = [i for i in range(len(raw_data)) if "#" not in raw_data[i]]
     for row in raw_data:
         if "#" not in row:
             modified_data.append(list(row))
@@ -116,10 +119,11 @@ def expand_universe(raw_data: list[str]) -> list[list[str]]:
     transposed_data = [
         i for i in range(0, len(transposed_data)) if "#" not in transposed_data[i]
     ]
+    empty_cols = transposed_data
     for i in range(len(modified_data)):
         for item in transposed_data:
             modified_data[i].insert(item + transposed_data.index(item), ".")
-    return modified_data
+    return modified_data, empty_rows, empty_cols
 
 
 def enumerate_galaxies(input_data: list[list[str]]) -> tuple[dict, int]:
@@ -153,7 +157,8 @@ if __name__ == "__main__":
     filename = "example.txt"
     data = load_input(filename)
 
-    universe = expand_universe(data)
+    universe, null_rows, null_cols = expand_universe(data)
+    print(f"empty rows {null_rows}, empty_cols {null_cols}")
     if filename == "example.txt":
         matched_data = load_input("example_expanded.txt")
         for i in range(len(matched_data)):
@@ -163,4 +168,21 @@ if __name__ == "__main__":
 
     numbered_universe, galaxy_count = enumerate_galaxies(universe)
 
+    get_galactic_distances(numbered_universe, galaxy_count)
+
+    # Part two
+    print(numbered_universe)
+    for item in numbered_universe:
+        print(f"Galaxy: {item} - {numbered_universe[item]}")
+        x_count = [i for i in null_rows if i < numbered_universe[item][0]]
+
+        y_count = [i for i in null_cols if i < numbered_universe[item][1]]
+        print(x_count, y_count)
+        numbered_universe[item] = (
+            numbered_universe[item][0] + 100 * len(x_count),
+            numbered_universe[item][1] + 100 * len(y_count),
+        )
+        print(f"Updated galaxy: {item} - {numbered_universe[item]}")
+    print(galaxy_count)
+    print(numbered_universe)
     get_galactic_distances(numbered_universe, galaxy_count)
