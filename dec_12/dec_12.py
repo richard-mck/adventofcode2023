@@ -75,14 +75,25 @@ What is the sum of those counts?
 from collections import namedtuple
 
 from common_functions import load_input
-SpringGroup = namedtuple("SpringGroup", "condition_log working_items")
+
 SpringGroup = namedtuple("SpringGroup", "condition_log broken_groups")
+
+
 def parse_group(group: str) -> SpringGroup:
     group = group.split()
-    return SpringGroup(group[0], [int(i) for i in group[1].split(",")])
+    return SpringGroup(group[0], tuple(int(i) for i in group[1].split(",")))
+
+
+def check_group(conditions: str, group: tuple[int]) -> int:
+    print(f"Springs {conditions} groups: {group}")
+    return 1
 
 
 if __name__ == "__main__":
     data = load_input("example.txt")
     springs = [parse_group(row) for row in data]
+    print(springs)
+    output = 0
+    for row in springs:
+        output += check_group(row.condition_log, row.broken_groups)
     pass
