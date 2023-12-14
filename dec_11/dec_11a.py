@@ -98,9 +98,11 @@ Expand the universe, then find the length of the shortest path between every pai
 lengths?
 """
 
-import pprint
+from collections import namedtuple
 
 from common_functions import load_input
+
+Point = namedtuple("Point", "x y")
 
 
 def expand_universe(
@@ -133,13 +135,14 @@ def enumerate_galaxies(input_data: list[list[str]]) -> tuple[dict, int]:
         for j in range(len(input_data[i])):
             if input_data[i][j] == "#":
                 counter += 1
-                galaxy_dict[counter] = (i, j)
+                galaxy_dict[counter] = Point(j, i)
     return galaxy_dict, counter
 
 
 def calculate_distance(galaxy_map: dict, start: int, end: int) -> int:
-    dx = abs(galaxy_map[start][0] - galaxy_map[end][0])
-    dy = abs(galaxy_map[start][1] - galaxy_map[end][1])
+    dx = abs(galaxy_map[start].x - galaxy_map[end].x)
+    dy = abs(galaxy_map[start].y - galaxy_map[end].y)
+    print(f"{start} -> {end} distance {dx}x + {dy}y")
     return dx + dy
 
 
@@ -171,18 +174,20 @@ if __name__ == "__main__":
     get_galactic_distances(numbered_universe, galaxy_count)
 
     # Part two
-    print(numbered_universe)
-    for item in numbered_universe:
-        print(f"Galaxy: {item} - {numbered_universe[item]}")
-        x_count = [i for i in null_rows if i < numbered_universe[item][0]]
+    # Recalculate original galaxy positions to set up offset calcs
+    second_universe, galaxy_count = enumerate_galaxies(data)
+    print(second_universe)
+    for item in second_universe:
+        print(f"Galaxy: {item} - {second_universe[item]}")
+        x_count = [i for i in null_cols if i < second_universe[item].x]
 
-        y_count = [i for i in null_cols if i < numbered_universe[item][1]]
+        y_count = [i for i in null_rows if i < second_universe[item].y]
         print(x_count, y_count)
-        numbered_universe[item] = (
-            numbered_universe[item][0] + 100 * len(x_count),
-            numbered_universe[item][1] + 100 * len(y_count),
+        second_universe[item] = Point(
+            second_universe[item].x + 10 * len(x_count),
+            second_universe[item].y + 10 * len(y_count),
         )
-        print(f"Updated galaxy: {item} - {numbered_universe[item]}")
+        print(f"Updated galaxy: {item} - {second_universe[item]}")
     print(galaxy_count)
-    print(numbered_universe)
-    get_galactic_distances(numbered_universe, galaxy_count)
+    print(second_universe)
+    get_galactic_distances(second_universe, galaxy_count)
