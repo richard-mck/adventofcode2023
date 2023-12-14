@@ -85,8 +85,31 @@ def parse_group(group: str) -> SpringGroup:
 
 
 def check_group(conditions: str, group: tuple[int]) -> int:
-    print(f"Springs {conditions} groups: {group}")
-    return 1
+    """Given a set of conditions and a list of groupings associated with that group,"""
+    print(f"Springs {conditions} groups: {group} ", end="")
+    char = conditions[0]
+    broken_count = group[0]
+    print(f"sping: {char} broken: {broken_count}")
+    result = 0
+
+    def check_stop():
+        """If . we can move immediately on since this doesn't count toward our tally"""
+        return check_group(conditions[1:], group)
+
+    def check_hash():
+        return 1
+
+    def check_question():
+        return check_stop() + check_hash()
+
+    if char == ".":
+        result = check_stop()
+    elif char == "#":
+        result = check_hash()
+    elif char == "?":
+        result = check_question()
+
+    return result
 
 
 if __name__ == "__main__":
@@ -96,4 +119,5 @@ if __name__ == "__main__":
     output = 0
     for row in springs:
         output += check_group(row.condition_log, row.broken_groups)
+    print(output)
     pass
