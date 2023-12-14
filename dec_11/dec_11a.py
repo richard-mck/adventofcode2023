@@ -122,28 +122,24 @@ def expand_universe(raw_data: list[str]) -> list[list[str]]:
     return modified_data
 
 
-def enumerate_galaxies(input_data: list[list[str]]) -> tuple[list[list[str]], int]:
+def enumerate_galaxies(input_data: list[list[str]]) -> tuple[dict, int]:
     counter = 0
+    galaxy_dict = {}
     for i in range(len(input_data)):
         for j in range(len(input_data[i])):
             if input_data[i][j] == "#":
                 counter += 1
-                input_data[i][j] = str(counter)
-    return input_data, counter
+                galaxy_dict[counter] = (i, j)
+    return galaxy_dict, counter
 
 
-def calculate_distance(galaxy_map: list[list[str]], start: int, end: int) -> float:
-    for row, col in enumerate(galaxy_map):
-        if str(start) in col:
-            start_pos = (row, col.index(str(start)))
-        if str(end) in col:
-            end_pos = (row, col.index(str(end)))
-    dx = abs(start_pos[0] - end_pos[0])
-    dy = abs(start_pos[1] - end_pos[1])
+def calculate_distance(galaxy_map: dict, start: int, end: int) -> int:
+    dx = abs(galaxy_map[start][0] - galaxy_map[end][0])
+    dy = abs(galaxy_map[start][1] - galaxy_map[end][1])
     return dx + dy
 
 
-def get_galactic_distances(galaxy_map: list[list[str]], start: int):
+def get_galactic_distances(galaxy_map: dict, start: int):
     distances = []
     for i in range(1, start + 1):
         for j in range(i, start + 1):
@@ -158,7 +154,6 @@ if __name__ == "__main__":
     data = load_input(filename)
 
     universe = expand_universe(data)
-    pprint.pprint(universe)
     if filename == "example.txt":
         matched_data = load_input("example_expanded.txt")
         for i in range(len(matched_data)):
@@ -167,6 +162,5 @@ if __name__ == "__main__":
         assert len(universe[0]) == 13
 
     numbered_universe, galaxy_count = enumerate_galaxies(universe)
-    pprint.pprint(numbered_universe)
 
     get_galactic_distances(numbered_universe, galaxy_count)
