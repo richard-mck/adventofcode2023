@@ -44,12 +44,15 @@ def format_numbers_to_tuples(raw_data: list[str]) -> dict:
     result = {}
     modified_data = raw_data.copy()
     for y in range(len(modified_data)):
+        # Use regex to find all unique numbers in a row
         nums_in_row = [num for num in findall("\d+", raw_data[y])]
         for num in nums_in_row:
+            # Add the X/Y position to the resulting dictionary as a tuple
             x = modified_data[y].find(num)
             modified_data[y] = modified_data[y].replace(num, "." * len(num), 1)
             result[(x, y)] = raw_data[y][x : x + len(num)]
             for i in range(x, x + len(num)):
+                # Ensure that each X/Y coord that is part of a digit string maps to that digit string
                 result[(i, y)] = raw_data[y][x : x + len(num)]
     return result
 
