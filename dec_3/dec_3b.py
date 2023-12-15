@@ -42,13 +42,14 @@ class PartNumber(object):
 
 
 # We can iterate over the rows and check for the presence of symbols
-def get_indices_of_symbols(row: str) -> list[int]:
+def get_indices_of_symbols(raw_data: list[str]) -> dict:
     """Given a string, return a list of all * symbols (stripping whitespace)"""
-    row = row.rstrip()
-    indices = [
-        key for key, _ in enumerate(row) if row[key] == "*" and not row[key].isdigit()
-    ]
-    return indices
+    result = {}
+    for y in range(len(raw_data)):
+        for x in range(len(raw_data[y])):
+            if raw_data[y][x] == "*":
+                result[(x, y)] = raw_data[y][x]
+    return result
 
 
 # If a symbol is present, we can then check the index, index+1 and index-1 in the current row and the rows
