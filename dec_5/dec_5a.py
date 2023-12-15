@@ -134,7 +134,7 @@ def extract_map_blocks(raw_data: list[str]) -> list[AlmanacMap]:
     temp_list = []
     raw_data.append("\n")  # Add a new line to make data consistent
     for row in raw_data:
-        if row[0].isalnum():
+        if len(row) > 1 and row[0].isalnum():
             temp_list.append(row)
             continue
         result.append(AlmanacMap(temp_list[0], temp_list[1:]))
@@ -185,9 +185,11 @@ def compare_ranges(r1: range, r2: range, destination: range) -> list[range]:
     # if r2.start < r1.start and r2.stop > r1.stop:
     #     return [overlap]
     return result
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
-    seeds = data[0].rstrip().split()
+    seeds = data[0].split()
     map_blocks = extract_map_blocks(data[2:])
     result = []
     for seed in seeds[1:]:
