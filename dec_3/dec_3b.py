@@ -81,6 +81,20 @@ def format_numbers_to_indices(row: str) -> list[PartNumber]:
     return result
 
 
+def format_numbers_to_tuples(raw_data: list[str]) -> dict:
+    result = {}
+    modified_data = raw_data.copy()
+    for y in range(len(modified_data)):
+        nums_in_row = [num for num in findall("\d+", raw_data[y])]
+        for num in nums_in_row:
+            x = modified_data[y].find(num)
+            modified_data[y] = modified_data[y].replace(num, "." * len(num), 1)
+            result[(x, y)] = raw_data[y][x : x + len(num)]
+            for i in range(x, x + len(num)):
+                result[(i, y)] = raw_data[y][x : x + len(num)]
+    return result
+
+
 def find_gear_ratios(rows: list[list[PartNumber]], symbol_index: int) -> list[int]:
     # We have to consider the relationship between a single instance of a symbol and all adjacent rows
     # However, we do not need to consider the relationship between multiple symbols and adjacent rows
@@ -106,8 +120,9 @@ if __name__ == "__main__":
     # Standard example should yield 4361, 467835
     print(data)
     # TODO: refactor this into proper functions
-    symbol_indices = [get_indices_of_symbols(i) for i in data]
-    digit_dict = [format_numbers_to_indices(i) for i in data]
+    symbol_indices = get_indices_of_symbols(data)
+    # digit_dict = [format_numbers_to_indices(i) for i in data]
+    digit_dict = format_numbers_to_tuples(data)
     part_count = []
     for i in range(len(symbol_indices)):
         if len(symbol_indices[i]) == 0:
