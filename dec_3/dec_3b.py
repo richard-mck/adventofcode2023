@@ -115,13 +115,39 @@ def find_gear_ratios(rows: list[list[PartNumber]], symbol_index: int) -> list[in
     return ratios
 
 
+def find_gear_combinations(symbols: dict, nums: dict) -> int:
+    # fmt: off
+    lookup_table = [
+        (-1, -1), (0, -1), (1, -1),
+        (-1,  0), (0,  0), (1,  0),
+        (-1,  1), (0,  1), (1,  1),
+    ]
+    # fmt: on
+    result = 0
+    for symbol in symbols:
+        x = symbol[0]
+        y = symbol[1]
+        # Get all positions that have a valid part number
+        matches = [
+            int(nums[(j[0] + x, j[1] + y)])
+            for j in lookup_table
+            if (j[0] + x, j[1] + y) in nums.keys()
+        ]
+        # Extract unique part numbers since the check will find overlaps e.g. [755, 598, 598]
+        unique_ratio = list(set(matches))
+        print(f"Single pass check {matches}")
+        print(f"Unique: {unique_ratio}")
+        if len(unique_ratio) > 1:
+            result += unique_ratio[0] * unique_ratio[1]
+    print(result)
+    return result
+
+
 if __name__ == "__main__":
     data = load_input("example_a.txt")
     # Standard example should yield 4361, 467835
     print(data)
-    # TODO: refactor this into proper functions
     symbol_indices = get_indices_of_symbols(data)
-    # digit_dict = [format_numbers_to_indices(i) for i in data]
     digit_dict = format_numbers_to_tuples(data)
     part_count = []
     for i in range(len(symbol_indices)):
@@ -139,3 +165,6 @@ if __name__ == "__main__":
             f"Data: {data[i].rstrip()}, symbols: {symbol_indices[i]} - parts: {part_count}"
         )
     print(sum(part_count))
+    print(f"Symbols {symbol_indices}")
+    print(f"Numbers {digit_dict}")
+    ratios = find_gear_combinations(symbol_indices, digit_dict)
