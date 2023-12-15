@@ -80,6 +80,20 @@ def transpose_data(row_based_data: list[str]) -> list[str]:
     return result
 
 
+def find_mirrored_rows(puzzle: list[str]) -> int:
+    result = 0
+    print(f"len {len(puzzle)} - {puzzle}")
+    for i in range(1, len(puzzle)):
+        if puzzle[i] == puzzle[i - 1]:
+            print(f"Match found at {i}")
+            puzzle_left = puzzle[: i - 1]
+            puzzle_right = puzzle[i + 1 :]
+            if len(puzzle_left) == 0 or len(puzzle_right) == 0:
+                return 1
+            result += find_mirrored_rows(puzzle_left + puzzle_right)
+    return result
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     puzzles = parse_data_on_empty_rows(data)
@@ -88,3 +102,5 @@ if __name__ == "__main__":
     for item in puzzles:
         assert transpose_data(item[0]) == item[1]
         assert item[0] == transpose_data(item[1])
+        print(f"Vertical: {find_mirrored_rows(item[1])}")
+        print(f"Horizontal: {find_mirrored_rows(item[0])}")
