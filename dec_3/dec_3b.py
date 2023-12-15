@@ -29,18 +29,6 @@ from re import findall
 from common_functions import load_input
 
 
-class PartNumber(object):
-    def __init__(self, part_number: str):
-        self.part_number = part_number
-        self.part_int = int(part_number)
-        self.indices = []
-
-    def generate_indices(self, index: int):
-        self.indices.append(index)
-        for i in range(index + 1, index + len(self.part_number)):
-            self.indices.append(i)
-
-
 # We can iterate over the rows and check for the presence of symbols
 def get_indices_of_symbols(raw_data: list[str]) -> dict:
     """Given a string, return a list of all * symbols (stripping whitespace)"""
@@ -49,35 +37,6 @@ def get_indices_of_symbols(raw_data: list[str]) -> dict:
         for x in range(len(raw_data[y])):
             if raw_data[y][x] == "*":
                 result[(x, y)] = raw_data[y][x]
-    return result
-
-
-# If a symbol is present, we can then check the index, index+1 and index-1 in the current row and the rows
-# before and after for numbers
-def check_row_for_numbers(
-    part_nums: list[PartNumber], symbol_index: int
-) -> list[(int, int)]:
-    matched_numbers = []
-    for key, value in enumerate(part_nums):
-        matches = any(
-            symbol_index - 1 <= i <= symbol_index + 1 for i in part_nums[key].indices
-        )
-        if matches:
-            matched_numbers.append((symbol_index, value.part_int))
-    return matched_numbers
-
-
-def format_numbers_to_indices(row: str) -> list[PartNumber]:
-    """
-    Given a row, transform it into a list of PartNumbers containing numbers as attributes and a list of indices for
-    these numbers.
-    Replaces checked values in the row as it goes, ensuring no duplicate entries
-    """
-    result = [PartNumber(num) for num in findall("\d+", row)]
-    for item in result:
-        index = row.find(item.part_number)
-        item.generate_indices(index)
-        row = row.replace(item.part_number, "." * len(item.part_number), 1)
     return result
 
 
@@ -93,26 +52,6 @@ def format_numbers_to_tuples(raw_data: list[str]) -> dict:
             for i in range(x, x + len(num)):
                 result[(i, y)] = raw_data[y][x : x + len(num)]
     return result
-
-
-def find_gear_ratios(rows: list[list[PartNumber]], symbol_index: int) -> list[int]:
-    # We have to consider the relationship between a single instance of a symbol and all adjacent rows
-    # However, we do not need to consider the relationship between multiple symbols and adjacent rows
-    # We can examine our rows symbol by symbol to find matches
-    # We know we have a match of two items in a single row if their indices +1 and -1 overlap
-    # We know that vertically and diagonally, our number indices must overlap or overlap given +1 and -1
-    def multiply_row(row: list):
-        return row[0][1] * row[1][1]
-
-    ratios = []
-    low = check_row_for_numbers(rows[0], symbol_index)
-    med = check_row_for_numbers(rows[1], symbol_index)
-    high = check_row_for_numbers(rows[2], symbol_index)
-    for item in [low, med, high]:
-        if len(item) == 2:
-            ratios.append(multiply_row(item))
-
-    return ratios
 
 
 def find_gear_combinations(symbols: dict, nums: dict) -> int:
@@ -149,22 +88,6 @@ if __name__ == "__main__":
     print(data)
     symbol_indices = get_indices_of_symbols(data)
     digit_dict = format_numbers_to_tuples(data)
-    part_count = []
-    for i in range(len(symbol_indices)):
-        if len(symbol_indices[i]) == 0:
-            continue
-        for symbol in symbol_indices[i]:
-            ratios = find_gear_ratios(
-                [digit_dict[i - 1], digit_dict[i], digit_dict[i + 1]], symbol
-            )
-            low = check_row_for_numbers(digit_dict[i - 1], symbol)
-            med = check_row_for_numbers(digit_dict[i], symbol)
-            high = check_row_for_numbers(digit_dict[i + 1], symbol)
-            part_count += low + med + high
-        print(
-            f"Data: {data[i].rstrip()}, symbols: {symbol_indices[i]} - parts: {part_count}"
-        )
-    print(sum(part_count))
     print(f"Symbols {symbol_indices}")
     print(f"Numbers {digit_dict}")
     ratios = find_gear_combinations(symbol_indices, digit_dict)
