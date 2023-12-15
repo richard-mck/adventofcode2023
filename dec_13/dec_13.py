@@ -66,8 +66,10 @@ Find the line of reflection in each of the patterns in your notes. What number d
 notes?
 """
 
-from common_functions import load_input
+from common_functions import load_input, parse_data_on_empty_rows
 
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
+    puzzles = parse_data_on_empty_rows(data)
+    print(puzzles)
