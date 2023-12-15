@@ -68,8 +68,23 @@ notes?
 
 from common_functions import load_input, parse_data_on_empty_rows
 
+
+def transpose_data(row_based_data: list[str]) -> list[str]:
+    """Given a grid of strings, return the same grid transformed into columns instead of rows"""
+    result = []
+    for i in range(len(row_based_data[0])):
+        temp_list = []
+        for j in range(len(row_based_data)):
+            temp_list.append(row_based_data[j][i])
+        result.append("".join(temp_list))
+    return result
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
-    print(data)
     puzzles = parse_data_on_empty_rows(data)
     print(puzzles)
+    puzzles = [(item, transpose_data(item)) for item in puzzles]
+    for item in puzzles:
+        assert transpose_data(item[0]) == item[1]
+        assert item[0] == transpose_data(item[1])
