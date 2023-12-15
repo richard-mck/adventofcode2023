@@ -65,6 +65,7 @@ of 405.
 Find the line of reflection in each of the patterns in your notes. What number do you get after summarizing all of your
 notes?
 """
+from pprint import pprint
 
 from common_functions import load_input, parse_data_on_empty_rows
 
@@ -80,12 +81,12 @@ def transpose_data(row_based_data: list[str]) -> list[str]:
     return result
 
 
-def find_mirrored_rows(puzzle: list[str]) -> int:
+def find_mirrored_rows(puzzle: list[str], row_num_only=False) -> int:
     result = 0
-    print(f"len {len(puzzle)} - {puzzle}")
     for i in range(1, len(puzzle)):
         if puzzle[i] == puzzle[i - 1]:
-            print(f"Match found at {i}")
+            if row_num_only:
+                return i
             puzzle_left = puzzle[: i - 1]
             puzzle_right = puzzle[i + 1 :]
             if len(puzzle_left) == 0 or len(puzzle_right) == 0:
@@ -99,8 +100,24 @@ if __name__ == "__main__":
     puzzles = parse_data_on_empty_rows(data)
     print(puzzles)
     puzzles = [(item, transpose_data(item)) for item in puzzles]
+    mirror_sum = 0
     for item in puzzles:
         assert transpose_data(item[0]) == item[1]
         assert item[0] == transpose_data(item[1])
-        print(f"Vertical: {find_mirrored_rows(item[1])}")
-        print(f"Horizontal: {find_mirrored_rows(item[0])}")
+        horizontal = find_mirrored_rows(item[0])
+        vertical = find_mirrored_rows(item[1])
+        h_row = find_mirrored_rows(item[0], row_num_only=True)
+        v_col = find_mirrored_rows(item[1], row_num_only=True)
+        if vertical == 1:
+            mirror_sum += v_col
+            item[1].insert(v_col, "-" * len(item[1][v_col]))
+            pprint(item[1])
+        elif horizontal == 1:
+            mirror_sum += 100 * (h_row)
+            item[0].insert(h_row, "-" * len(item[0][h_row]))
+            pprint(item[0])
+        print(f"Vertical reflection: {vertical}")
+        print(f"Horizontal reflection: {horizontal}")
+        print(f"Vertical col: {v_col}")
+        print(f"Horizontal row: {h_row}")
+        print(f"Sum {mirror_sum}")
