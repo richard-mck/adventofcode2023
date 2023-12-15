@@ -194,7 +194,7 @@ def compare_ranges(r1: range, r2: range, destination: range) -> list[range]:
         return [r1]
     # We can now find the destination indices and convert the overlap:
     start_index = r2.index(overlap.start)
-    stop_index = r2.index(overlap.stop)
+    stop_index = r2.index(overlap.stop - 1)
     overlap = destination[start_index:stop_index]
     result = [overlap]
     # 2. Source overlaps and extends beyond seed |---Se-<---|----So--------> -> Return underlap and matching
@@ -239,4 +239,11 @@ if __name__ == "__main__":
     print(f"{result} -\n min {min(result)}")
     # Part 2!
     range_of_seeds = convert_seeds_to_ranges(seeds[1:])
+    result = []
+    for block in map_blocks:
+        for entry in block.entries:
+            converted_seeds = range_of_seeds
+            for seed in converted_seeds:
+                next_range = compare_ranges(seed, entry.source, entry.destination)
+    print(result)
     pass
