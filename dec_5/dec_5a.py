@@ -169,7 +169,7 @@ def extract_map_blocks(raw_data: list[str]) -> list[AlmanacMap]:
     return result
 
 
-def convert_value_with_map(search_value: int, map_block: AlmanacMap) -> int:
+def convert_source_to_dest_with_map(search_value: int, map_block: AlmanacMap) -> int:
     for entries in map_block.entries:
         if search_value in entries.source:
             return entries.destination[entries.source.index(search_value)]
@@ -213,15 +213,30 @@ def compare_ranges(r1: range, r2: range, destination: range) -> list[range]:
     return result
 
 
+def convert_seeds_to_ranges(raw_seed_nums: list[str]) -> list[range]:
+    seed_ranges = []
+    while len(raw_seed_nums) != 0:
+        seed_ranges.append(
+            range(int(raw_seed_nums[0]), int(raw_seed_nums[0]) + int(raw_seed_nums[1]))
+        )
+        # double pop since the list is updated after the first pop
+        raw_seed_nums.pop(0)
+        raw_seed_nums.pop(0)
+    return seed_ranges
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     seeds = data[0].split()
     map_blocks = extract_map_blocks(data[2:])
+    print(map_blocks)
     result = []
     for seed in seeds[1:]:
         seed = int(seed)
         for block in map_blocks:
-            seed = convert_value_with_map(seed, block)
+            seed = convert_source_to_dest_with_map(seed, block)
         result.append(seed)
-    print(f"{result} - min {min(result)}")
+    print(f"{result} -\n min {min(result)}")
+    # Part 2!
+    range_of_seeds = convert_seeds_to_ranges(seeds[1:])
     pass
