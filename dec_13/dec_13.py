@@ -138,6 +138,7 @@ if __name__ == "__main__":
         print(f"{puzzles.index(item)}:")
         assert transpose_data(item[0]) == item[1]
         assert item[0] == transpose_data(item[1])
+        # TODO: add check to ensure that resulting mirror touches at least one edge (e.g. the mirror is on the ground)
         h_row = find_mirrored_rows(item[0], row_num_only=True)
         v_col = find_mirrored_rows(item[1], row_num_only=True)
         h_count = count_mirrored_rows(item[0])
