@@ -95,6 +95,19 @@ def find_mirrored_rows(puzzle: list[str], row_num_only=False) -> int:
     return result
 
 
+def count_mirrored_rows(puzzle: list[str]) -> int:
+    tally = 0
+    for i in range(1, len(puzzle)):
+        if puzzle[i] == puzzle[i - 1]:
+            tally += 1
+            puzzle_left = puzzle[: i - 1]
+            puzzle_right = puzzle[i + 1 :]
+            if len(puzzle_right) == 0:
+                return 1
+            tally += find_mirrored_rows(puzzle_left + puzzle_right)
+    return tally
+
+
 def print_mirror_with_reflection_line(
     puzzle: list[str], ref_index: int, transpose=False
 ):
@@ -115,28 +128,28 @@ def print_mirror_with_reflection_line(
 
 
 if __name__ == "__main__":
+    # Reddit example should be 709 for p1 and 1400 for p2
     data = load_input("example.txt")
     puzzles = parse_data_on_empty_rows(data)
-    print(puzzles)
+    print(f"{len(puzzles)} total puzzles")
     puzzles = [(item, transpose_data(item)) for item in puzzles]
     mirror_sum = 0
     for item in puzzles:
+        print(f"{puzzles.index(item)}:")
         assert transpose_data(item[0]) == item[1]
         assert item[0] == transpose_data(item[1])
-        horizontal = find_mirrored_rows(item[0])
-        vertical = find_mirrored_rows(item[1])
         h_row = find_mirrored_rows(item[0], row_num_only=True)
         v_col = find_mirrored_rows(item[1], row_num_only=True)
-        if vertical == 1:
-            mirror_sum += v_col
-            item[1].insert(v_col, "-" * len(item[1][v_col]))
-            pprint(item[1])
-        elif horizontal == 1:
-            mirror_sum += 100 * (h_row)
-            item[0].insert(h_row, "-" * len(item[0][h_row]))
-            pprint(item[0])
-        print(f"Vertical reflection: {vertical}")
-        print(f"Horizontal reflection: {horizontal}")
+        h_count = count_mirrored_rows(item[0])
+        v_count = count_mirrored_rows(item[1])
         print(f"Vertical col: {v_col}")
         print(f"Horizontal row: {h_row}")
+        print(f"Vertical count: {v_count}")
+        print(f"Horizontal count: {h_count}")
+        if v_count > h_count:
+            mirror_sum += v_col
+            print_mirror_with_reflection_line(item[1], v_col, transpose=True)
+        else:
+            mirror_sum += 100 * h_row
+            print_mirror_with_reflection_line(item[0], h_row)
         print(f"Sum {mirror_sum}")
