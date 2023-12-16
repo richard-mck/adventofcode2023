@@ -95,6 +95,25 @@ def find_mirrored_rows(puzzle: list[str], row_num_only=False) -> int:
     return result
 
 
+def print_mirror_with_reflection_line(
+    puzzle: list[str], ref_index: int, transpose=False
+):
+    """Given a mirror and an index, print it out with the mirror line shown"""
+    print_str = []
+    if transpose:
+        puzzle = transpose_data(puzzle)
+    for i in range(len(puzzle)):
+        if i == ref_index and not transpose:
+            print_str.append("-" * len(puzzle[i]) + "\n")
+        for j in range(len(puzzle[i])):
+            if j == ref_index and transpose:
+                print_str.append("|")
+            print_str.append(puzzle[i][j])
+            if j == len(puzzle[i]) - 1:
+                print_str.append("\n")
+    print("".join(print_str))
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     puzzles = parse_data_on_empty_rows(data)
