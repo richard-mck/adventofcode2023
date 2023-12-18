@@ -91,19 +91,6 @@ def find_mirrored_rows(puzzle: list[str]) -> int:
     return 0
 
 
-def count_mirrored_rows(puzzle: list[str]) -> int:
-    tally = 0
-    for i in range(1, len(puzzle)):
-        if puzzle[i] == puzzle[i - 1]:
-            tally += 1
-            puzzle_left = puzzle[: i - 1]
-            puzzle_right = puzzle[i + 1 :]
-            if len(puzzle_right) == 0:
-                return 1
-            tally += find_mirrored_rows(puzzle_left + puzzle_right)
-    return tally
-
-
 def check_for_edge_contact(puzzle: list[str], i1: int, i2: int) -> bool:
     touches_edge = True
     increment = 1
@@ -150,15 +137,11 @@ if __name__ == "__main__":
         print(f"{puzzles.index(item)}:")
         assert transpose_data(item[0]) == item[1]
         assert item[0] == transpose_data(item[1])
-        h_row = find_mirrored_rows(item[0], row_num_only=True)
-        v_col = find_mirrored_rows(item[1], row_num_only=True)
-        h_count = count_mirrored_rows(item[0])
-        v_count = count_mirrored_rows(item[1])
-        print(f"Vertical col: {v_col}")
-        print(f"Horizontal row: {h_row}")
-        print(f"Vertical count: {v_count}")
-        print(f"Horizontal count: {h_count}")
-        if v_count > h_count:
+        h_row = find_mirrored_rows(item[0])
+        v_col = find_mirrored_rows(item[1])
+        print(f"Vertical col index: {v_col}")
+        print(f"Horizontal row index: {h_row}")
+        if v_col > h_row:
             mirror_sum += v_col
             print_mirror_with_reflection_line(item[1], v_col, transpose=True)
         else:
