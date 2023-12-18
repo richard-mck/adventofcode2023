@@ -91,6 +91,24 @@ def find_mirrored_rows(puzzle: list[str]) -> int:
     return 0
 
 
+def find_smudged_rows(puzzle: list[str]) -> int:
+    for i in range(1, len(puzzle)):
+        if row_is_smudged(puzzle[i], puzzle[i - 1]):
+            if check_for_edge_contact(puzzle, i - 1, i):
+                return i
+            else:
+                continue
+    return 0
+
+
+def row_is_smudged(r1: str, r2: str) -> bool:
+    mismatch_count = [i for i in range(len(r1)) if r1[i] != r2[i]]
+    if len(mismatch_count) == 1:
+        return True
+    else:
+        return False
+
+
 def check_for_edge_contact(puzzle: list[str], i1: int, i2: int) -> bool:
     touches_edge = True
     increment = 1
@@ -139,6 +157,32 @@ if __name__ == "__main__":
         assert item[0] == transpose_data(item[1])
         h_row = find_mirrored_rows(item[0])
         v_col = find_mirrored_rows(item[1])
+        print(f"Vertical col index: {v_col}")
+        print(f"Horizontal row index: {h_row}")
+        if v_col > h_row:
+            mirror_sum += v_col
+            print_mirror_with_reflection_line(item[1], v_col, transpose=True)
+        else:
+            mirror_sum += 100 * h_row
+            print_mirror_with_reflection_line(item[0], h_row)
+        print(f"Sum {mirror_sum}")
+    # Part 2!
+    print("--------- Part 2 ---------")
+    # We need to find the rows where only one character is different and see how this changes the mirror line.
+    # We aren't looking for the location of the mirror row itself, we are looking for places where we can adjust
+    # a single character and create a new mirror line elsewhere.
+    # So we need to check first for mirrored rows as before, then iterate out from the mirror checking if any of the
+    # rows match all but one. If this is not successful, we need to then try checking each row for a mirror.
+    # If two rows match, aside from one character, we can then use the same mirror check as before
+    # The brute for approach would be to check each row against it's neighbour,
+    # tallying differences and continuing if the tally == 1
+    mirror_sum = 0
+    for item in puzzles:
+        print(f"{puzzles.index(item)}:")
+        assert transpose_data(item[0]) == item[1]
+        assert item[0] == transpose_data(item[1])
+        h_row = find_smudged_rows(item[0])
+        v_col = find_smudged_rows(item[1])
         print(f"Vertical col index: {v_col}")
         print(f"Horizontal row index: {h_row}")
         if v_col > h_row:
