@@ -81,18 +81,14 @@ def transpose_data(row_based_data: list[str]) -> list[str]:
     return result
 
 
-def find_mirrored_rows(puzzle: list[str], row_num_only=False) -> int:
-    result = 0
+def find_mirrored_rows(puzzle: list[str]) -> int:
     for i in range(1, len(puzzle)):
         if puzzle[i] == puzzle[i - 1]:
-            if row_num_only:
+            if check_for_edge_contact(puzzle, i - 1, i):
                 return i
-            puzzle_left = puzzle[: i - 1]
-            puzzle_right = puzzle[i + 1 :]
-            if len(puzzle_left) == 0 or len(puzzle_right) == 0:
-                return 1
-            result += find_mirrored_rows(puzzle_left + puzzle_right)
-    return result
+            else:
+                continue
+    return 0
 
 
 def count_mirrored_rows(puzzle: list[str]) -> int:
@@ -106,6 +102,22 @@ def count_mirrored_rows(puzzle: list[str]) -> int:
                 return 1
             tally += find_mirrored_rows(puzzle_left + puzzle_right)
     return tally
+
+
+def check_for_edge_contact(puzzle: list[str], i1: int, i2: int) -> bool:
+    touches_edge = True
+    increment = 1
+    while True:
+        match1 = i1 - increment
+        match2 = i2 + increment
+
+        if match1 < 0 or match2 == len(puzzle):
+            break
+        if puzzle[match1] != puzzle[match2]:
+            return False
+        increment += 1
+
+    return touches_edge
 
 
 def print_mirror_with_reflection_line(
@@ -138,7 +150,6 @@ if __name__ == "__main__":
         print(f"{puzzles.index(item)}:")
         assert transpose_data(item[0]) == item[1]
         assert item[0] == transpose_data(item[1])
-        # TODO: add check to ensure that resulting mirror touches at least one edge (e.g. the mirror is on the ground)
         h_row = find_mirrored_rows(item[0], row_num_only=True)
         v_col = find_mirrored_rows(item[1], row_num_only=True)
         h_count = count_mirrored_rows(item[0])
