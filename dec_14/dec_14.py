@@ -127,20 +127,22 @@ if __name__ == "__main__":
     # Rocks can only be moved as far as the first hash they encounter
     print(data)
     moved_rocks = move_rocks_as_strings(transpose_data(data))
-    calculate_weight(transpose_data(moved_rocks))
+    print(f"Part 1 weight {calculate_weight(transpose_data(moved_rocks))}")
     # Part 2
     # We need to figure out what transformations are required for the data to complete a cycle
     # Then we need to work out some sort of simplification so we can do a billion cycles in a reasonable timeframe
     # Naive solution: just run the cycles a billion times
-    one_cycle = cycle_rocks(data)
-    calculate_weight(one_cycle)
-    two_cycle = cycle_rocks(one_cycle)
-    three_cycle = cycle_rocks(two_cycle)
+
     counter = 1000000000
     rocks = data.copy()
+    weights = []
     while counter >= 0:
-        if counter % 10000 == 0:
-            print(counter)
+        if counter % 100 == 0:
+            calculate_weight(rocks)
+            print(f"Iteration {counter} - {len(weights)} weights - {weights}")
         rocks = cycle_rocks(rocks)
+        updated_weight = calculate_weight(rocks)
+        if updated_weight not in weights:
+            weights.append(updated_weight)
         counter -= 1
     calculate_weight(rocks)
