@@ -51,9 +51,41 @@ The total load is the sum of the load caused by all of the rounded rocks. In thi
 Tilt the platform so that the rounded rocks all roll north. Afterward, what is the total load on the north support
 beams?
 """
+from pprint import pprint
 
-from common_functions import load_input
+from common_functions import load_input, transpose_data
+
+
+def move_rocks_as_strings(puzzle: list[str]) -> list[str]:
+    # Assuming initially we are always only moving things north
+    # Assuming also that puzzle is unmodified
+    updated_puzzle = transpose_data(puzzle)
+    return_puzzle = []
+    for i in range(len(updated_puzzle)):
+        # Find fixed rocks to be reinserted later
+        fixed_rocks = [
+            j for j in range(len(updated_puzzle[i])) if updated_puzzle[i][j] == "#"
+        ]
+        # Remove the fixed rocks so we can collapse the mobile rocks within a row
+        new_rows = updated_puzzle[i].split("#")
+        updated_row = ""
+        for row in new_rows:
+            rock_count = row.count("O")
+            updated_row = (
+                updated_row + "O" * rock_count + ("." * (len(row) - rock_count))
+            )
+        # Reinserted the fixed rocks
+        for rock in fixed_rocks:
+            updated_row = updated_row[:rock] + "#" + updated_row[rock:]
+        return_puzzle.append(updated_row)
+    pprint(transpose_data(return_puzzle))
+    return transpose_data(return_puzzle)
+
 
 if __name__ == "__main__":
     data = load_input("example.txt")
+    # We need a function to parse the data into columns then move all the rocks.
+    # Rocks can only be moved as far as the first hash they encounter
+    print(data)
+    moved_rocks = move_rocks_as_strings(data)
     pass
