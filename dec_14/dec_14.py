@@ -82,10 +82,21 @@ def move_rocks_as_strings(puzzle: list[str]) -> list[str]:
     return transpose_data(return_puzzle)
 
 
+def calculate_weight(puzzle: list[str]):
+    total_weight = 0
+    for i in range(len(puzzle)):
+        rocks = puzzle[i].count("O")
+        row_weight = rocks * (len(puzzle) - i)
+        print(f"{i}: {puzzle[i]} - {rocks} rocks = {row_weight}")
+        total_weight += row_weight
+    print(total_weight)
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     # We need a function to parse the data into columns then move all the rocks.
     # Rocks can only be moved as far as the first hash they encounter
     print(data)
     moved_rocks = move_rocks_as_strings(data)
+    calculate_weight(moved_rocks)
     pass
