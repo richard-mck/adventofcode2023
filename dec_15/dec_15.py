@@ -66,6 +66,20 @@ sequence is one long line; be careful when copy-pasting it.)
 
 from common_functions import load_input
 
+
+def hash_string(unhashed: str) -> int:
+    """Given a string, follow the hashing algorithm and return the total value"""
+    current = 0
+    for char in unhashed:
+        # Determine the ASCII code for the current character of the string.
+        current += ord(char)
+        # Increase the current value by the ASCII code you just determined.
+        # Set the current value to itself multiplied by 17.
+        current *= 17
+        # Set the current value to the remainder of dividing itself by 256.
+        current = current % 256
+    return current
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
