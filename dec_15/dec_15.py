@@ -85,6 +85,17 @@ def parse_data(raw_data: str) -> list[str]:
     return raw_data[0].split(",")
 
 
+def tally_hashed_list(sequence: list[str]) -> int:
+    total = 0
+    for item in sequence:
+        total += hash_string(item)
+    return total
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
+    data = parse_data(data)
+    print(data)
+    sequence_sum = tally_hashed_list(data)
+    print(sequence_sum)
