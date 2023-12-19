@@ -129,6 +129,15 @@ def add_lens(label: str, value: str, box: list[str]) -> list[str]:
     return box
 
 
+def calculate_focus_power(boxes: dict):
+    total = 0
+    for box in boxes:
+        for i in range(len(boxes[box])):
+            value = search("\d+", boxes[box][i]).group()
+            total += (box + 1) * (i + 1) * int(value)
+    print(total)
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
@@ -136,3 +145,8 @@ if __name__ == "__main__":
     print(data)
     sequence_sum = tally_hashed_list(data)
     print(sequence_sum)
+
+    # Part 2
+    print("Part 2:")
+    steps = iterate_on_sequence(data)
+    calculate_focus_power(steps)
