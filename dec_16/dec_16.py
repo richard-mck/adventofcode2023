@@ -70,9 +70,17 @@ The light isn't energizing enough tiles to produce lava; to debug the contraptio
 current situation. With the beam starting in the top-left heading right, how many tiles end up being energized?
 """
 
+from collections import namedtuple
+
 from common_functions import load_input, transform_data_to_dict_grid, print_grid
+
+Beam = namedtuple("Beam", "position direction")
+Tile = namedtuple("Tile", "type energised")
 
 if __name__ == "__main__":
     data = load_input("example.txt")
     grid = transform_data_to_dict_grid(data)
+    print_grid(grid)
+    beam = Beam((0, 0), (0, 1))
+    grid = {i: Tile(grid[i], False) for i in grid}
     print_grid(grid)
