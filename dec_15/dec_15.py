@@ -103,6 +103,15 @@ def iterate_on_sequence(unhashed: list[str]) -> dict:
         print(f"{key} - {item} - {action}")
     print(labels)
     return labels
+
+
+def remove_lens(key: str, box: list[str]) -> list[str]:
+    for i in range(0, len(box)):
+        if key in box[i]:
+            print(f"Matched: {key} - {i} - {box[i]}")
+            box.pop(i)
+            break
+    return box
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
