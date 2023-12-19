@@ -91,6 +91,37 @@ def calculate_weight(puzzle: list[str]):
     print(total_weight)
 
 
+def cycle_rocks(puzzle: list[str]) -> list[str]:
+    # Rotate north:
+    north_puzzle = move_rocks_as_strings(transpose_data(puzzle))
+    north_puzzle = transpose_data(north_puzzle)
+    # print("North")
+    # pprint(north_puzzle)
+
+    west_puzzle = move_rocks_as_strings(north_puzzle)
+    # print("West")
+    # pprint(west_puzzle)
+
+    west_puzzle.reverse()
+    south_puzzle = transpose_data(west_puzzle)
+    south_puzzle = move_rocks_as_strings(south_puzzle)
+    south_puzzle = transpose_data(south_puzzle)
+    south_puzzle.reverse()
+    # print("South")
+    # pprint(south_puzzle)
+
+    east_puzzle = transpose_data(south_puzzle)
+    east_puzzle.reverse()
+    east_puzzle = transpose_data(east_puzzle)
+    east_puzzle = move_rocks_as_strings(east_puzzle)
+    east_puzzle = transpose_data(east_puzzle)
+    east_puzzle.reverse()
+    east_puzzle = transpose_data(east_puzzle)
+    # print("East")
+    # pprint(east_puzzle)
+    return east_puzzle
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     # We need a function to parse the data into columns then move all the rocks.
