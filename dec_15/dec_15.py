@@ -64,6 +64,8 @@ Run the HASH algorithm on each step in the initialization sequence. What is the 
 sequence is one long line; be careful when copy-pasting it.)
 """
 
+from re import search
+
 from common_functions import load_input
 
 
@@ -92,6 +94,15 @@ def tally_hashed_list(sequence: list[str]) -> int:
     return total
 
 
+def iterate_on_sequence(unhashed: list[str]) -> dict:
+    labels = {i: [] for i in range(0, 256)}
+    for item in unhashed:
+        key = search("[a-zA-Z]+", item).group()
+        action = search("[^a-zA-Z0-9]", item).group()
+        index = hash_string(key)
+        print(f"{key} - {item} - {action}")
+    print(labels)
+    return labels
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
