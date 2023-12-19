@@ -80,6 +80,11 @@ def hash_string(unhashed: str) -> int:
         current = current % 256
     return current
 
+
+def parse_data(raw_data: str) -> list[str]:
+    return raw_data[0].split(",")
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
