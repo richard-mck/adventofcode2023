@@ -59,7 +59,7 @@ from common_functions import load_input, transpose_data
 def move_rocks_as_strings(puzzle: list[str]) -> list[str]:
     # Assuming initially we are always only moving things north
     # Assuming also that puzzle is unmodified
-    updated_puzzle = transpose_data(puzzle)
+    updated_puzzle = puzzle.copy()
     return_puzzle = []
     for i in range(len(updated_puzzle)):
         # Find fixed rocks to be reinserted later
@@ -78,8 +78,7 @@ def move_rocks_as_strings(puzzle: list[str]) -> list[str]:
         for rock in fixed_rocks:
             updated_row = updated_row[:rock] + "#" + updated_row[rock:]
         return_puzzle.append(updated_row)
-    pprint(transpose_data(return_puzzle))
-    return transpose_data(return_puzzle)
+    return return_puzzle
 
 
 def calculate_weight(puzzle: list[str]):
@@ -97,6 +96,21 @@ if __name__ == "__main__":
     # We need a function to parse the data into columns then move all the rocks.
     # Rocks can only be moved as far as the first hash they encounter
     print(data)
-    moved_rocks = move_rocks_as_strings(data)
-    calculate_weight(moved_rocks)
-    pass
+    moved_rocks = move_rocks_as_strings(transpose_data(data))
+    calculate_weight(transpose_data(moved_rocks))
+    # Part 2
+    # We need to figure out what transformations are required for the data to complete a cycle
+    # Then we need to work out some sort of simplification so we can do a billion cycles in a reasonable timeframe
+    # Naive solution: just run the cycles a billion times
+    one_cycle = cycle_rocks(data)
+    calculate_weight(one_cycle)
+    two_cycle = cycle_rocks(one_cycle)
+    three_cycle = cycle_rocks(two_cycle)
+    counter = 1000000000
+    rocks = data.copy()
+    while counter >= 0:
+        if counter % 10000 == 0:
+            print(counter)
+        rocks = cycle_rocks(rocks)
+        counter -= 1
+    calculate_weight(rocks)
