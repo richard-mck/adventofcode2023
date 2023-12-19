@@ -112,6 +112,19 @@ def remove_lens(key: str, box: list[str]) -> list[str]:
             box.pop(i)
             break
     return box
+
+
+def add_lens(label: str, value: str, box: list[str]) -> list[str]:
+    matched_labels = [i for i in range(len(box)) if label in box[i]]
+    if len(matched_labels) > 0:
+        for i in matched_labels:
+            box.pop(i)
+            box.insert(i, value)
+    else:
+        box.append(value)
+    return box
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
