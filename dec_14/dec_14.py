@@ -133,16 +133,19 @@ if __name__ == "__main__":
     # Then we need to work out some sort of simplification so we can do a billion cycles in a reasonable timeframe
     # Naive solution: just run the cycles a billion times
 
-    counter = 1000000000
+    counter = 999
     rocks = data.copy()
     weights = []
     while counter >= 0:
-        if counter % 100 == 0:
-            calculate_weight(rocks)
-            print(f"Iteration {counter} - {len(weights)} weights - {weights}")
+        # TODO: Calculate actual repeating cycle and work out properly
         rocks = cycle_rocks(rocks)
         updated_weight = calculate_weight(rocks)
+        if counter % 10000 == 0:
+            print(
+                f"Iteration {counter} - {len(weights)} weights - {weights} - weight: {updated_weight}"
+            )
         if updated_weight not in weights:
+            print(f"Cycle repeated - {counter} - {updated_weight}")
             weights.append(updated_weight)
         counter -= 1
-    calculate_weight(rocks)
+    print(calculate_weight(rocks))
