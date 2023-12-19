@@ -97,10 +97,14 @@ def tally_hashed_list(sequence: list[str]) -> int:
 def iterate_on_sequence(unhashed: list[str]) -> dict:
     labels = {i: [] for i in range(0, 256)}
     for item in unhashed:
-        key = search("[a-zA-Z]+", item).group()
+        label = search("[a-zA-Z]+", item).group()
         action = search("[^a-zA-Z0-9]", item).group()
-        index = hash_string(key)
-        print(f"{key} - {item} - {action}")
+        index = hash_string(label)
+        print(f"{label} - {item} - {action}")
+        if action == "-":
+            labels[index] = remove_lens(label, labels[index])
+        else:
+            labels[index] = add_lens(label, item, labels[index])
     print(labels)
     return labels
 
