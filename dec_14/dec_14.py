@@ -81,14 +81,13 @@ def move_rocks_as_strings(puzzle: list[str]) -> list[str]:
     return return_puzzle
 
 
-def calculate_weight(puzzle: list[str]):
+def calculate_weight(puzzle: list[str]) -> int:
     total_weight = 0
     for i in range(len(puzzle)):
         rocks = puzzle[i].count("O")
         row_weight = rocks * (len(puzzle) - i)
-        print(f"{i}: {puzzle[i]} - {rocks} rocks = {row_weight}")
         total_weight += row_weight
-    print(total_weight)
+    return total_weight
 
 
 def cycle_rocks(puzzle: list[str]) -> list[str]:
