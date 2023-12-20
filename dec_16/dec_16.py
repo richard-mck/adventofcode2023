@@ -77,6 +77,14 @@ from common_functions import load_input, transform_data_to_dict_grid, print_grid
 Beam = namedtuple("Beam", "position direction")
 Tile = namedtuple("Tile", "type energised")
 
+def rotate_tuple_clockwise(pos: tuple[int, int]) -> tuple[int, int]:
+    """Given a tuple, we can get the next direction clockwise by swapping the values and multiplying right by -1"""
+    return pos[1], pos[0] * -1
+
+
+def rotate_tuple_anticlockwise(pos: tuple[int, int]) -> tuple[int, int]:
+    """Given a tuple, we can get the next direction clockwise by swapping the values and multiplying left by -1"""
+    return pos[1] * -1, pos[0]
 if __name__ == "__main__":
     data = load_input("example.txt")
     grid = transform_data_to_dict_grid(data)
