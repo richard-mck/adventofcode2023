@@ -70,7 +70,7 @@ The light isn't energizing enough tiles to produce lava; to debug the contraptio
 current situation. With the beam starting in the top-left heading right, how many tiles end up being energized?
 """
 
-from collections import namedtuple
+from collections import namedtuple, deque
 
 from common_functions import load_input, transform_data_to_dict_grid, print_grid
 
@@ -94,6 +94,11 @@ def rotate_tuple_anticlockwise(pos: tuple[int, int]) -> tuple[int, int]:
 def print_energised_grid(grid: dict, pos: tuple[int, int]):
     grid_to_print = {i: grid[i].type for i in grid}
     grid_to_print[pos] = "*"
+    print_grid(grid_to_print)
+
+
+def print_final_grid(grid: dict):
+    grid_to_print = {i: grid[i].direction for i in grid}
     print_grid(grid_to_print)
 
 
@@ -143,6 +148,38 @@ def compute_next_direction(
             else:
                 return [rotate_tuple_anticlockwise(direction)]
     return []
+
+
+def breadth_first_search(grid: dict, beam: Beam) -> dict:
+    queue = deque()
+    goal = 0
+    # Label root node as explored
+    grid[beam.pos] = Tile(grid[beam.pos].type, True, DIRECTION_SYMBOLS[beam.dir])
+    queue.append(beam)
+    while len(queue) > 0:
+        v = queue.pop()
+        if v.dir == goal:
+            return grid
+        print_energised_grid(grid, v.pos)
+        print()
+        for direction in compute_next_direction(grid[v.pos].type, v.dir):
+            next_pos = compute_next_position(v.pos, direction)
+            if next_pos not in grid.keys():
+                print(f"Next position doesnt exist -{next_pos}")
+                continue
+            # Label tiles that have been explored
+            new_dir = (
+                DIRECTION_SYMBOLS[direction]
+                if grid[next_pos].type not in ["/", "\\", "-", "|"]
+                else grid[next_pos].type
+            )
+            if not grid[next_pos].energised:
+                grid[next_pos] = Tile(grid[next_pos].type, True, new_dir)
+                queue.append(Beam(next_pos, direction))
+            elif new_dir in ["/", "\\", "-", "|"]:
+                grid[next_pos] = Tile(grid[next_pos].type, True, new_dir)
+                queue.append(Beam(next_pos, direction))
+    return grid
 
 
 def traverse_grid(grid: dict, beam: Beam) -> dict:
@@ -219,9 +256,10 @@ if __name__ == "__main__":
     grid = transform_data_to_dict_grid(data)
     print_grid(grid)
     beam = Beam((0, 0), (0, 1))
-    grid = {i: Tile(grid[i], False, None) for i in grid}
+    grid = {i: Tile(grid[i], False, grid[i]) for i in grid}
     print_grid(grid)
     print(grid)
-    update_grid = traverse_grid(grid, beam)
+    update_grid = breadth_first_search(grid, beam)
+    print_final_grid(update_grid)
     tally = [1 for i in update_grid if update_grid[i].energised]
     print(sum(tally))
