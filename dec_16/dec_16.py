@@ -74,7 +74,7 @@ from collections import namedtuple
 
 from common_functions import load_input, transform_data_to_dict_grid, print_grid
 
-Beam = namedtuple("Beam", "position direction")
+Beam = namedtuple("Beam", "pos dir")
 Tile = namedtuple("Tile", "type energised")
 
 DIRECTIONS = {"right": (0, 1), "down": (1, 0), "left": (0, -1), "up": (-1, 0)}
@@ -89,6 +89,75 @@ def rotate_tuple_clockwise(pos: tuple[int, int]) -> tuple[int, int]:
 def rotate_tuple_anticlockwise(pos: tuple[int, int]) -> tuple[int, int]:
     """Given a tuple, we can get the next direction clockwise by swapping the values and multiplying left by -1"""
     return pos[1] * -1, pos[0]
+
+
+def traverse_grid(grid: dict, beam: Beam):
+    count = 20
+    while count > 0:
+        count -= 1
+        # Get the next position
+        next_pos = (
+            beam.pos[0] + beam.dir[0],
+            beam.pos[1] + beam.dir[1],
+        )
+        if next_pos not in grid.keys():
+            print(f"Next position doesnt exist -{next_pos}")
+            break
+        current_type = grid[beam.pos].type
+        # Energise the current position:
+        grid[beam.pos] = Tile(DIRECTION_SYMBOLS[beam.dir], True)
+        grid_to_print = {i: grid[i].type for i in grid}
+        print_grid(grid_to_print)
+        print()
+        # Check what the next tile is
+        match grid[next_pos].type:
+            case ".":
+                beam = Beam(next_pos, beam.dir)
+                continue
+            case "-":
+                if beam.dir in [
+                    DIRECTIONS["left"],
+                    DIRECTIONS["right"],
+                ]:
+                    beam = Beam(next_pos, beam.dir)
+                    continue
+                else:
+                    traverse_grid(
+                        grid, Beam(next_pos, rotate_tuple_clockwise(beam.dir))
+                    )
+                    traverse_grid(
+                        grid, Beam(next_pos, rotate_tuple_anticlockwise(beam.dir))
+                    )
+                    continue
+            case "|":
+                if beam.dir in [
+                    DIRECTIONS["up"],
+                    DIRECTIONS["down"],
+                ]:
+                    beam = Beam(next_pos, beam.dir)
+                    continue
+                else:
+                    traverse_grid(
+                        grid, Beam(next_pos, rotate_tuple_clockwise(beam.dir))
+                    )
+                    traverse_grid(
+                        grid, Beam(next_pos, rotate_tuple_anticlockwise(beam.dir))
+                    )
+                    continue
+            case "/":
+                if beam.dir in [DIRECTIONS["right"], DIRECTIONS["left"]]:
+                    beam = Beam(next_pos, rotate_tuple_anticlockwise(beam.dir))
+                else:
+                    beam = Beam(next_pos, rotate_tuple_clockwise(beam.dir))
+                continue
+            case "\\":
+                if beam.dir in [DIRECTIONS["right"], DIRECTIONS["left"]]:
+                    beam = Beam(next_pos, rotate_tuple_clockwise(beam.dir))
+                else:
+                    beam = Beam(next_pos, rotate_tuple_anticlockwise(beam.dir))
+                continue
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     grid = transform_data_to_dict_grid(data)
@@ -96,3 +165,5 @@ if __name__ == "__main__":
     beam = Beam((0, 0), (0, 1))
     grid = {i: Tile(grid[i], False) for i in grid}
     print_grid(grid)
+    print(grid)
+    traverse_grid(grid, beam)
