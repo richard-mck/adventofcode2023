@@ -75,7 +75,7 @@ from collections import namedtuple
 from common_functions import load_input, transform_data_to_dict_grid, print_grid
 
 Beam = namedtuple("Beam", "pos dir")
-Tile = namedtuple("Tile", "type energised")
+Tile = namedtuple("Tile", "type energised direction")
 
 DIRECTIONS = {"right": (0, 1), "down": (1, 0), "left": (0, -1), "up": (-1, 0)}
 DIRECTION_SYMBOLS = {(0, 1): ">", (1, 0): "V", (0, -1): "<", (-1, 0): "^"}
@@ -91,10 +91,17 @@ def rotate_tuple_anticlockwise(pos: tuple[int, int]) -> tuple[int, int]:
     return pos[1] * -1, pos[0]
 
 
-def traverse_grid(grid: dict, beam: Beam):
-    count = 20
-    while count > 0:
-        count -= 1
+def print_energised_grid(grid: dict, pos: tuple[int, int]):
+    grid_to_print = {i: grid[i].type for i in grid}
+    grid_to_print[pos] = "*"
+    print_grid(grid_to_print)
+
+
+def traverse_grid(grid: dict, beam: Beam) -> dict:
+    count = 0
+    # while count > 0:
+    while True:
+        count += 1
         # Get the next position
         next_pos = (
             beam.pos[0] + beam.dir[0],
@@ -104,10 +111,12 @@ def traverse_grid(grid: dict, beam: Beam):
             print(f"Next position doesnt exist -{next_pos}")
             break
         current_type = grid[beam.pos].type
+        if grid[beam.pos].direction == DIRECTION_SYMBOLS[beam.dir]:
+            print("Tile already energised, exiting")
+            break
         # Energise the current position:
-        grid[beam.pos] = Tile(DIRECTION_SYMBOLS[beam.dir], True)
-        grid_to_print = {i: grid[i].type for i in grid}
-        print_grid(grid_to_print)
+        grid[beam.pos] = Tile(grid[beam.pos].type, True, DIRECTION_SYMBOLS[beam.dir])
+        print_energised_grid(grid, beam.pos)
         print()
         # Check what the next tile is
         match grid[next_pos].type:
@@ -156,6 +165,8 @@ def traverse_grid(grid: dict, beam: Beam):
                 else:
                     beam = Beam(next_pos, rotate_tuple_anticlockwise(beam.dir))
                 continue
+    print(f"Total iterations: {count}")
+    return grid
 
 
 if __name__ == "__main__":
@@ -163,7 +174,9 @@ if __name__ == "__main__":
     grid = transform_data_to_dict_grid(data)
     print_grid(grid)
     beam = Beam((0, 0), (0, 1))
-    grid = {i: Tile(grid[i], False) for i in grid}
+    grid = {i: Tile(grid[i], False, None) for i in grid}
     print_grid(grid)
     print(grid)
-    traverse_grid(grid, beam)
+    update_grid = traverse_grid(grid, beam)
+    tally = [1 for i in update_grid if update_grid[i].energised]
+    print(sum(tally))
