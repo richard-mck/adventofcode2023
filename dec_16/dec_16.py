@@ -103,6 +103,48 @@ def compute_next_position(
     return position[0] + direction[0], position[1] + direction[1]
 
 
+def compute_next_direction(
+    tile_type: str, direction: tuple[int, int]
+) -> list[tuple[int, int]]:
+    """Given a tile format and a traversal direction, return a list of valid next directions"""
+    match tile_type:
+        case ".":
+            return [direction]
+        case "-":
+            if direction in [
+                DIRECTIONS["left"],
+                DIRECTIONS["right"],
+            ]:
+                return [direction]
+            else:
+                return [
+                    rotate_tuple_clockwise(direction),
+                    rotate_tuple_anticlockwise(direction),
+                ]
+        case "|":
+            if direction in [
+                DIRECTIONS["up"],
+                DIRECTIONS["down"],
+            ]:
+                return [direction]
+            else:
+                return [
+                    rotate_tuple_clockwise(direction),
+                    rotate_tuple_anticlockwise(direction),
+                ]
+        case "/":
+            if direction in [DIRECTIONS["right"], DIRECTIONS["left"]]:
+                return [rotate_tuple_anticlockwise(direction)]
+            else:
+                return [rotate_tuple_clockwise(direction)]
+        case "\\":
+            if direction in [DIRECTIONS["right"], DIRECTIONS["left"]]:
+                return [rotate_tuple_clockwise(direction)]
+            else:
+                return [rotate_tuple_anticlockwise(direction)]
+    return []
+
+
 def traverse_grid(grid: dict, beam: Beam) -> dict:
     count = 0
     # while count > 0:
