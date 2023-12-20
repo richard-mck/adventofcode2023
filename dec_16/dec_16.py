@@ -97,16 +97,19 @@ def print_energised_grid(grid: dict, pos: tuple[int, int]):
     print_grid(grid_to_print)
 
 
+def compute_next_position(
+    position: tuple[int, int], direction: tuple[int, int]
+) -> tuple[int, int]:
+    return position[0] + direction[0], position[1] + direction[1]
+
+
 def traverse_grid(grid: dict, beam: Beam) -> dict:
     count = 0
     # while count > 0:
     while True:
         count += 1
         # Get the next position
-        next_pos = (
-            beam.pos[0] + beam.dir[0],
-            beam.pos[1] + beam.dir[1],
-        )
+        next_pos = compute_next_position(beam.pos, beam.dir)
         if next_pos not in grid.keys():
             print(f"Next position doesnt exist -{next_pos}")
             break
