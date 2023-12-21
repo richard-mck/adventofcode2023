@@ -68,6 +68,40 @@ Ultimately, in this example, 46 tiles become energized.
 
 The light isn't energizing enough tiles to produce lava; to debug the contraption, you need to start by analyzing the
 current situation. With the beam starting in the top-left heading right, how many tiles end up being energized?
+
+Part 2
+So, the beam could start on any tile in the top row (heading downward), any tile in the bottom row (heading upward),
+any tile in the leftmost column (heading right), or any tile in the rightmost column (heading left). To produce lava,
+you need to find the configuration that energizes as many tiles as possible.
+
+In the above example, this can be achieved by starting the beam in the fourth tile from the left in the top row:
+
+.|<2<\....
+|v-v\^....
+.v.v.|->>>
+.v.v.v^.|.
+.v.v.v^...
+.v.v.v^..\
+.v.v/2\\..
+<-2-/vv|..
+.|<<<2-|.\
+.v//.|.v..
+
+Using this configuration, 51 tiles are energized:
+
+.#####....
+.#.#.#....
+.#.#.#####
+.#.#.##...
+.#.#.##...
+.#.#.##...
+.#.#####..
+########..
+.#######..
+.#...#.#..
+
+Find the initial beam configuration that energizes the largest number of tiles; how many tiles are energized in that
+configuration?
 """
 
 from collections import namedtuple, deque
@@ -199,3 +233,6 @@ if __name__ == "__main__":
     print_final_grid(update_grid)
     tally = [1 for i in update_grid if update_grid[i].energised]
     print(sum(tally))
+
+    # Part 2
+    print("\nPart 2!\n")
