@@ -156,13 +156,22 @@ def breadth_first_search(grid: dict, beam: Beam) -> dict:
     # Label root node as explored
     grid[beam.pos] = Tile(grid[beam.pos].type, True, DIRECTION_SYMBOLS[beam.dir])
     queue.append(beam)
+    splitters = []
     while len(queue) > 0:
         goal += 1
         v = queue.pop()
         if goal >= len(grid) * 2:
             print(f"Probable infinite loop - iteration {goal}")
             return grid
-        for direction in compute_next_direction(grid[v.pos].type, v.dir):
+        next_directions = compute_next_direction(grid[v.pos].type, v.dir)
+        # No need to check splitters that have already been checked from a given direction
+        # e.g. We can tell we have reached a loop in the map if the beam is already in the splitter list
+        if len(next_directions) > 1:
+            if v not in splitters:
+                splitters.append(v)
+            else:
+                continue
+        for direction in next_directions:
             next_pos = compute_next_position(v.pos, direction)
             if next_pos not in grid.keys():
                 print(f"Next position doesnt exist -{next_pos}")
@@ -173,15 +182,8 @@ def breadth_first_search(grid: dict, beam: Beam) -> dict:
                 if grid[next_pos].type not in ["/", "\\", "-", "|"]
                 else grid[next_pos].type
             )
-            if not grid[next_pos].energised:
-                grid[next_pos] = Tile(grid[next_pos].type, True, new_dir)
-                queue.append(Beam(next_pos, direction))
-            elif new_dir in ["/", "\\", "-", "|"]:
-                grid[next_pos] = Tile(grid[next_pos].type, True, new_dir)
-                queue.append(Beam(next_pos, direction))
-            elif grid[v.pos].type == ".":
-                grid[next_pos] = Tile(grid[next_pos].type, True, new_dir)
-                queue.append(Beam(next_pos, direction))
+            grid[next_pos] = Tile(grid[next_pos].type, True, new_dir)
+            queue.append(Beam(next_pos, direction))
     return grid
 
 
