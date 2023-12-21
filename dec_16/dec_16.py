@@ -179,6 +179,9 @@ def breadth_first_search(grid: dict, beam: Beam) -> dict:
             elif new_dir in ["/", "\\", "-", "|"]:
                 grid[next_pos] = Tile(grid[next_pos].type, True, new_dir)
                 queue.append(Beam(next_pos, direction))
+            elif grid[v.pos].type == ".":
+                grid[next_pos] = Tile(grid[next_pos].type, True, new_dir)
+                queue.append(Beam(next_pos, direction))
     return grid
 
 
