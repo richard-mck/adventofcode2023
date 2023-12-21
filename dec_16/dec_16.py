@@ -157,11 +157,11 @@ def breadth_first_search(grid: dict, beam: Beam) -> dict:
     grid[beam.pos] = Tile(grid[beam.pos].type, True, DIRECTION_SYMBOLS[beam.dir])
     queue.append(beam)
     while len(queue) > 0:
+        goal += 1
         v = queue.pop()
-        if v.dir == goal:
+        if goal >= len(grid) * 2:
+            print(f"Probable infinite loop - iteration {goal}")
             return grid
-        print_energised_grid(grid, v.pos)
-        print()
         for direction in compute_next_direction(grid[v.pos].type, v.dir):
             next_pos = compute_next_position(v.pos, direction)
             if next_pos not in grid.keys():
