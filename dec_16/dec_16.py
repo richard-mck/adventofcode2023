@@ -221,6 +221,30 @@ def breadth_first_search(grid: dict, beam: Beam) -> dict:
     return grid
 
 
+def generate_starting_positions(row_max: int, col_max: int) -> dict:
+    """
+    0 1 2 3 4 5 6 7 8 9
+    1                 9
+    2                 9
+    3                 9
+    4                 9
+    5                 9
+    6                 9
+    7                 9
+    8                 9
+    9 1 2 3 4 5 6 7 8 9
+    /0
+    """
+    valid_rows = [0, row_max]
+    valid_cols = [0, col_max]
+    start_left = [(0, i) for i in range(col_max)]
+    start_right = [(col_max, i) for i in range(col_max)]
+    start_top = [(i, 0) for i in range(row_max)]
+    start_bottom = [(i, row_max) for i in range(row_max)]
+
+    return start_left + start_right + start_top + start_bottom
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     grid = transform_data_to_dict_grid(data)
@@ -236,3 +260,5 @@ if __name__ == "__main__":
 
     # Part 2
     print("\nPart 2!\n")
+    vals = []
+    print(generate_starting_positions(len(data), len(data[0])))
