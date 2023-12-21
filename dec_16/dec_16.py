@@ -259,4 +259,18 @@ if __name__ == "__main__":
     # Part 2
     print("\nPart 2!\n")
     vals = []
-    print(generate_starting_positions(len(data), len(data[0])))
+    positions = generate_starting_positions(len(data), len(data[0]))
+    # Brute force approach - try every possible combination
+    for opt in positions:
+        grid = transform_data_to_dict_grid(data)
+        grid = {i: Tile(grid[i], False, grid[i]) for i in grid}
+        beam = Beam(opt[0], DIRECTIONS[opt[1]])
+        print_grid(grid)
+        print(grid)
+        update_grid = breadth_first_search(grid, beam)
+        print_final_grid(update_grid)
+        tally = [1 for i in update_grid if update_grid[i].energised]
+        print(sum(tally))
+        vals.append(sum(tally))
+    print(vals)
+    print(max(vals))
