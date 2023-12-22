@@ -72,7 +72,7 @@ For each row, count all of the different arrangements of operational and broken 
 What is the sum of those counts?
 """
 
-from collections import namedtuple
+from collections import namedtuple, deque
 
 from common_functions import load_input
 
@@ -84,20 +84,118 @@ def parse_group(group: str) -> SpringGroup:
     return SpringGroup(group[0], tuple(int(i) for i in group[1].split(",")))
 
 
-def check_group(conditions: str, group: tuple[int]) -> int:
+def depth_first_search(conditions: str, group: list[int]) -> int:
+    """Given a set of possible conditions and known matches, return the total possible combinations"""
+    if len(conditions) == 0 and len(group) > 0:
+        return 0  # conditions exhausted but there are still groups therefore this path is invalid
+    elif len(conditions) == 0 and len(group) == 0:
+        return 1  # Conditions exhausted and groups exhausted, this is a valid path
+    elif len(conditions) > 0 and len(group) == 0 and "#" not in conditions:
+        return 1
+    elif len(conditions) > 0 and len(group) == 0 and "#" in conditions:
+        return 0
+    next_char = conditions[0]
+    if next_char == ".":
+        result = depth_first_search(conditions[1:], group)
+    if next_char == "?":
+        # fmt:off
+        result = depth_first_search("." + conditions[1:], group) + depth_first_search("#" + conditions[1:], group)
+        # fmt:on
+    if next_char == "#":
+        next_group = group[0]
+        condition_block = conditions[:next_group]
+        # There must be enough possible conditions left to match the group:
+        if len(conditions) < next_group:
+            return 0
+        # Check that the condition substring is not all stops
+        if "." not in condition_block and len(condition_block) == next_group:
+            group.pop(0)
+            print(f"Match found - {conditions} - {group}")
+            result = depth_first_search(conditions[next_group + 1 :], group)
+        else:
+            result = 0
+    # label v as discovered
+    # for all directed edges from v to w that are in G.adjacentEdges(v) do
+    #     if vertex w is not labeled as discovered then
+    #         recursively call DFS(G, w)
+
+
+def breadth_first_search(conditions: str, group: tuple[int]) -> int:
+    """Given a set of possible conditions and known matches, return the total possible combinations"""
+    combinations = 0
+    index = 0
+    group = list(group)
+    group_index = 0
+    group_count = 0
+    hash_nodes = []
+    # let Q be a queue
+    checked_items = deque()
+    # label root as explored
+    Checked = namedtuple("Checked", "char position")
+    root_node = Checked(conditions[index], index)
+    # Q.enqueue(root)
+    checked_items.append(root_node)
+    # while Q is not empty do
+    while len(checked_items) > 0:
+        #     v := Q.dequeue()
+        vertex = checked_items.pop()
+        #     if v is the goal then
+        #         return v
+        if len(group) == 0:
+            return combinations
+        if vertex.char == ".":
+            index += 1
+            checked_items.append(Checked(conditions[index], index))
+            continue
+        if vertex.char == "?":
+            checked_items.append(Checked(".", index))
+            checked_items.append(Checked("#", index))
+            continue
+        if vertex.char == "#":
+            hash_nodes.append("#")
+            group_count += 1
+            if group_count == group[group_index]:
+                group_index += 1
+            checked_items.append(Checked("#", index))
+
+    #     for all edges from v to w in G.adjacentEdges(v) do
+    #         if w is not labeled as explored then
+    #             label w as explored
+    #             w.parent := v
+    #             Q.enqueue(w)
+
+
+def check_group(conditions: str, groups: list[int]) -> int:
     """Given a set of conditions and a list of groupings associated with that group,"""
-    print(f"Springs {conditions} groups: {group} ", end="")
+    if len(groups) == 0:
+        # We have exhausted groups and therefore we may have a valid result
+        if "#" not in conditions:
+            return 1  # Only . and ? that are . remain
+        else:
+            return 0  # We haven't counted a necessary #
+    if len(conditions) == 0:
+        return 0
     char = conditions[0]
-    broken_count = group[0]
-    print(f"sping: {char} broken: {broken_count}")
-    result = 0
+    group = groups[0]
+    print(f"sping: {char} broken: {group}")
 
     def check_stop():
         """If . we can move immediately on since this doesn't count toward our tally"""
-        return check_group(conditions[1:], group)
+        return check_group(conditions[1:], groups)
 
     def check_hash():
-        return 1
+        condition_group = conditions[:group]
+        if "." in condition_group:
+            # We only want conditions that match our possible group
+            return 0
+        if len(condition_group) == group:
+            if len(groups) == 1:
+                return 1
+            else:
+                groups.pop(0)
+                return check_group(conditions[group:], groups)
+        else:
+            return check_group(conditions[group:], groups)
 
     def check_question():
         return check_stop() + check_hash()
@@ -108,6 +206,8 @@ def check_group(conditions: str, group: tuple[int]) -> int:
         result = check_hash()
     elif char == "?":
         result = check_question()
+    # Debugging help
+    print(f"{conditions}:{groups} -> {result}")
 
     return result
 
