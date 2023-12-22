@@ -54,9 +54,25 @@ Directing the crucible from the lava pool to the machine parts factory, but not 
 blocks in the same direction, what is the least heat loss it can incur?
 """
 
+from collections import namedtuple, deque
+
 from common_functions import load_input, transform_data_to_dict_grid, print_grid
+
+Block = namedtuple("Block", "pos val visited")
 
 if __name__ == "__main__":
     data = load_input("example.txt")
     grid = transform_data_to_dict_grid(data)
     print_grid(grid)
+    # This looks like a breadth first search problem? Or a candidate for A*
+    # We know our starting position, and we know our goal
+    start = (0, 0)
+    goal = (len(data) - 1, len(data[0]) - 1)
+    print(f"Start pos {start}:{grid[start]}, goal {goal}:{grid[goal]}")
+    # We cannot move more than 3 steps in a single direction, and we can only turn left or right
+    # Within those 3 steps, we want the sum of the temperature values to be as low as possible
+    # So we likely need a function to sum a path
+    # We want to find the route with the lowest "cost" to visit - something to search for
+    # This could be a use case for Dijkstra's algorithm? -https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+    # How do we incorporate the turn requirement into the algorithm? We can treat the heat loss as part of the distance
+    # calculation but how does required turning fit?
