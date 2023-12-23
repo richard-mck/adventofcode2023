@@ -60,10 +60,33 @@ from common_functions import load_input, transform_data_to_dict_grid, print_grid
 
 Block = namedtuple("Block", "pos val visited")
 
+
+def dijkstra(graph: dict, source: tuple[int, int], destination: tuple[int, int]):
+    block_queue = deque()
+    dist = {}
+    prev = {}
+    # Initialise the graph of vertices:
+    for item in graph:
+        dist[item] = None  # None represents infinity or undefined here
+        prev[item] = None
+        block_queue.append(Block(item, grid[item], False))
+    dist[source] = 0
+
+    # Search the nearby positions for the lowest possible distance
+    while block_queue:
+        # Find the blocks in the queue that have the lowest distance to the current block
+        block = block_queue.pop()
+        # Calculate distance from current block to source
+        # Distance is the i,j position of the block multiplied by its weighting
+        dist[block.pos] = (block.pos[0] * block.val) + (block.pos[1] * block.val)
+        # Maybe useful? https://stackabuse.com/courses/graphs-in-python-theory-and-implementation/lessons/dijkstras-algorithm/
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     grid = transform_data_to_dict_grid(data)
     print_grid(grid)
+    print(grid)
     # This looks like a breadth first search problem? Or a candidate for A*
     # We know our starting position, and we know our goal
     start = (0, 0)
