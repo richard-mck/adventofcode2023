@@ -99,3 +99,5 @@ if __name__ == "__main__":
     # This could be a use case for Dijkstra's algorithm? -https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
     # How do we incorporate the turn requirement into the algorithm? We can treat the heat loss as part of the distance
     # calculation but how does required turning fit?
+    # Does this suggest that A* is the more appropriate approach since we can include a heuristic to determine the
+    # weight of each move? - https://en.wikipedia.org/wiki/A*_search_algorithm
