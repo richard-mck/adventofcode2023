@@ -58,8 +58,25 @@ from collections import namedtuple, deque
 
 from common_functions import load_input, transform_data_to_dict_grid, print_grid
 
-Block = namedtuple("Block", "pos val visited")
+# Block = namedtuple("Block", "pos val visited prior_direction steps_since_turn")
+DIRECTIONS = {"right": (0, 1), "down": (1, 0), "left": (0, -1), "up": (-1, 0)}
 
+
+class Block(object):
+    def __init__(self, pos: tuple[int, int], val: int, prior_dir: str, last_turn: int):
+        self.pos = pos
+        self.val = val
+        self.prior_dir = prior_dir
+        self.last_turn = last_turn
+
+    def get_neighbours(self):
+        (i, j) = self.pos
+        return [
+            (i + DIRECTIONS["right"][0], j + DIRECTIONS["right"][1]),
+            (i + DIRECTIONS["down"][0], j + DIRECTIONS["down"][1]),
+            (i + DIRECTIONS["left"][0], j + DIRECTIONS["left"][1]),
+            (i + DIRECTIONS["up"][0], j + DIRECTIONS["up"][1]),
+        ]
 
 def dijkstra(graph: dict, source: tuple[int, int], destination: tuple[int, int]):
     block_queue = deque()
@@ -72,6 +89,10 @@ def dijkstra(graph: dict, source: tuple[int, int], destination: tuple[int, int])
         block_queue.append(Block(item, grid[item], False))
     dist[source] = 0
 
+    # Keep track of the steps since last turn
+    steps_taken = 0
+    # First moves must be right or down from 0,0 and keep track of prior direction
+    prior_dir = ["right", "down"]
     # Search the nearby positions for the lowest possible distance
     while block_queue:
         # Find the blocks in the queue that have the lowest distance to the current block
