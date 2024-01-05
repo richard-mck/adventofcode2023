@@ -55,11 +55,19 @@ blocks in the same direction, what is the least heat loss it can incur?
 """
 
 from collections import namedtuple, deque
+from typing import Optional
 
-from common_functions import load_input, Grid
+from common_functions import load_input, Grid, print_grid
 
 # Block = namedtuple("Block", "pos val visited prior_direction steps_since_turn")
 DIRECTIONS = {"right": (0, 1), "down": (1, 0), "left": (0, -1), "up": (-1, 0)}
+ARROWS = {"right": "→", "down": "↓", "left": "←", "up": "↑"}
+
+
+def get_direction(previous: tuple[int, int], current: tuple[int, int]) -> str:
+    i = current[0] - previous[0]
+    j = current[1] - previous[1]
+    return list(DIRECTIONS.keys())[list(DIRECTIONS.values()).index((i, j))]
 
 
 class Block(object):
@@ -89,35 +97,54 @@ class Block(object):
             (i + DIRECTIONS["up"][0], j + DIRECTIONS["up"][1]),
         ]
 
-def dijkstra(graph: dict, source: tuple[int, int], destination: tuple[int, int]):
-    block_queue = deque()
-    dist = {}
-    prev = {}
-    # Initialise the graph of vertices:
-    for item in graph:
-        dist[item] = None  # None represents infinity or undefined here
-        prev[item] = None
-        block_queue.append(Block(item, grid[item], False))
-    dist[source] = 0
 
-    # Keep track of the steps since last turn
-    steps_taken = 0
-    # First moves must be right or down from 0,0 and keep track of prior direction
-    prior_dir = ["right", "down"]
-    # Search the nearby positions for the lowest possible distance
-    while block_queue:
-        # Find the blocks in the queue that have the lowest distance to the current block
-        block = block_queue.pop()
-        # Calculate distance from current block to source
-        # Distance is the i,j position of the block multiplied by its weighting
-        dist[block.pos] = (block.pos[0] * block.val) + (block.pos[1] * block.val)
-        # Maybe useful? https://stackabuse.com/courses/graphs-in-python-theory-and-implementation/lessons/dijkstras-algorithm/
+def dijkstra(
+    graph: Grid, source: tuple[int, int], destination: tuple[int, int]
+) -> (dict, dict):
+    block_queue = deque()
+    total_loss: dict[tuple[int, int], Block] = {}
+    prev: dict[tuple[int, int], Optional[tuple[int, int]]] = {}
+    total_loss[source] = Block(source, graph.grid[source], "right", 0, 0)
+    prev[source] = None
+    block_queue.append(source)
+    travel_count = 0
+
+    while len(block_queue) != 0:
+        current = block_queue.popleft()
+        if current == destination:
+            break
+        for next_block in graph.get_neighbours(current):
+            block = Block(
+                next_block,
+                graph.grid[next_block],
+                get_direction(current, next_block),
+                travel_count,
+                0,
+            )
+            # Calculate the cost of this step, ignoring turn requirements
+            block.heat_loss = total_loss[current].heat_loss + block.val
+            # We only want new blocks or blocks where the cost is less on a subsequent visit
+            if (
+                next_block not in prev.keys()
+                or block.heat_loss < total_loss[next_block].heat_loss
+            ):
+                total_loss[next_block] = block
+                block_queue.append(next_block)
+                prev[next_block] = current
+
+        travel_count += 1
+
+    return total_loss, prev
+    # Maybe useful? https://stackabuse.com/courses/graphs-in-python-theory-and-implementation/lessons/dijkstras-algorithm/
 
 
 if __name__ == "__main__":
     data = load_input("example.txt")
     grid = Grid(data)
     grid.print_grid()
+    # Cast all values to int
+    for item in grid.grid:
+        grid.grid[item] = int(grid.grid[item])
     print(grid.grid)
     # This looks like a breadth first search problem? Or a candidate for A*
     # We know our starting position, and we know our goal
@@ -133,3 +160,6 @@ if __name__ == "__main__":
     # calculation but how does required turning fit?
     # Does this suggest that A* is the more appropriate approach since we can include a heuristic to determine the
     # weight of each move? - https://en.wikipedia.org/wiki/A*_search_algorithm
+    dist, steps = dijkstra(grid, start, goal)
+    new_grid = {step: ARROWS[dist[step].prior_dir] for step in dist}
+    print_grid(new_grid)
