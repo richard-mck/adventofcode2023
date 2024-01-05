@@ -56,7 +56,7 @@ blocks in the same direction, what is the least heat loss it can incur?
 
 from collections import namedtuple, deque
 
-from common_functions import load_input, transform_data_to_dict_grid, print_grid
+from common_functions import load_input, Grid
 
 # Block = namedtuple("Block", "pos val visited prior_direction steps_since_turn")
 DIRECTIONS = {"right": (0, 1), "down": (1, 0), "left": (0, -1), "up": (-1, 0)}
@@ -105,14 +105,14 @@ def dijkstra(graph: dict, source: tuple[int, int], destination: tuple[int, int])
 
 if __name__ == "__main__":
     data = load_input("example.txt")
-    grid = transform_data_to_dict_grid(data)
-    print_grid(grid)
-    print(grid)
+    grid = Grid(data)
+    grid.print_grid()
+    print(grid.grid)
     # This looks like a breadth first search problem? Or a candidate for A*
     # We know our starting position, and we know our goal
     start = (0, 0)
     goal = (len(data) - 1, len(data[0]) - 1)
-    print(f"Start pos {start}:{grid[start]}, goal {goal}:{grid[goal]}")
+    print(f"Start pos {start}:{grid.grid[start]}, goal {goal}:{grid.grid[goal]}")
     # We cannot move more than 3 steps in a single direction, and we can only turn left or right
     # Within those 3 steps, we want the sum of the temperature values to be as low as possible
     # So we likely need a function to sum a path
