@@ -63,11 +63,22 @@ DIRECTIONS = {"right": (0, 1), "down": (1, 0), "left": (0, -1), "up": (-1, 0)}
 
 
 class Block(object):
-    def __init__(self, pos: tuple[int, int], val: int, prior_dir: str, last_turn: int):
+    def __init__(
+        self,
+        pos: tuple[int, int],
+        val: int,
+        prior_dir: str,
+        sslt: int,  # steps since last turn
+        heat_loss: int,
+    ):
         self.pos = pos
         self.val = val
         self.prior_dir = prior_dir
-        self.last_turn = last_turn
+        self.sslt = sslt
+        self.heat_loss = heat_loss
+
+    def __repr__(self):
+        return f"Block({self.pos}, {self.val}, {self.prior_dir}, {self.sslt}, {self.heat_loss})"
 
     def get_neighbours(self):
         (i, j) = self.pos
