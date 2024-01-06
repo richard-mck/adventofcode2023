@@ -107,16 +107,7 @@ def dig_trench(instructions: list[DigChannel]) -> dict:
     return result
 
 
-if __name__ == "__main__":
-    data = load_input("example.txt")
-    print(data)
-    channels = [DigChannel(row) for row in data]
-    print(channels)
-    grid = dig_trench(channels)
-    print(grid)
-    print_grid(grid)
-    dugout = [i for i in grid if grid[i] == "#"]
-    print(f"Total channel length: {len(dugout)}")
+def calculate_area(holes: list[tuple[int, int]]) -> float:
     # Cribbing from day 10:
     # Using the shoelace formula - https://en.wikipedia.org/wiki/Shoelace_formula
     # combined with Pick's theorem - https://en.wikipedia.org/wiki/Pick's_theorem
@@ -136,3 +127,19 @@ if __name__ == "__main__":
     internal = area - (boundary_points / 2) + 1
     print(f"A:{area}, b:{boundary_points}, i:{internal}")
     print(f"Sum: {boundary_points + internal}")
+    return boundary_points + area
+
+
+if __name__ == "__main__":
+    data = load_input("example.txt")
+    print(data)
+    channels = [DigChannel(row) for row in data]
+    print(channels)
+    grid = dig_trench(channels)
+    print(grid)
+    print_grid(grid)
+    dugout = [i for i in grid if grid[i] == "#"]
+    print(f"Total channel length: {len(dugout)}")
+    area = calculate_area(dugout)
+
+    # Part 2
