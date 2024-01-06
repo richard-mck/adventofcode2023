@@ -113,31 +113,27 @@ def dig_trench(instructions: list[DigChannel]) -> dict:
     result[(i, j)] = "#"
     for item in instructions:
         if item.direction == "R":
-            for x in range(0, item.metres):
-                j += 1
-                result[(i, j)] = "#"
+            result[(i, j)] = "#"
+            j += item.metres
+            result[(i, j)] = "#"
         elif item.direction == "L":
-            for x in range(item.metres, 0, -1):
-                j -= 1
-                result[(i, j)] = "#"
+            result[(i, j)] = "#"
+            j -= item.metres
+            result[(i, j)] = "#"
 
         elif item.direction == "D":
-            for x in range(0, item.metres):
-                i += 1
-                result[(i, j)] = "#"
+            result[(i, j)] = "#"
+            i += item.metres
+            result[(i, j)] = "#"
 
         elif item.direction == "U":
-            for x in range(item.metres, 0, -1):
-                i -= 1
-                result[(i, j)] = "#"
+            result[(i, j)] = "#"
+            i -= item.metres
+            result[(i, j)] = "#"
 
     i_max = max(result.keys())[0]
     j_max = max(result.keys())[1]
     print(f"Max i,j {i_max},{j_max}")
-    for i in range(0, i_max + 1):
-        for j in range(0, j_max + 1):
-            if (i, j) not in result.keys():
-                result[(i, j)] = "."
     return result
 
 
