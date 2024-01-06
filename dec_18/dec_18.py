@@ -115,3 +115,5 @@ if __name__ == "__main__":
     grid = dig_trench(channels)
     print(grid)
     print_grid(grid)
+    count_excavated_squares = sum([1 for i in grid if grid[i] == "#"])
+    print(f"Total channel length: {count_excavated_squares}")
