@@ -164,6 +164,15 @@ def calculate_area(holes: list[tuple[int, int]]) -> float:
     return boundary_points + area
 
 
+def convert_channels(channels: list[DigChannel]) -> list[DigChannel]:
+    new_channels = []
+    for channel in channels:
+        channel.direction = HEX_DIREX[int(channel.colour[-1])]
+        channel.metres = int(channel.colour[1 : len(channel.colour) - 1], 16)
+        new_channels.append(channel)
+    return new_channels
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
