@@ -59,7 +59,7 @@ could it hold?
 
 from common_functions import load_input, print_grid
 
-COMPASS = {"EAST": (0, 1), "SOUTH": (1, 0), "WEST": (0, -1), "NORTH": (-1, 0)}
+COMPASS = {"R": (0, 1), "D": (1, 0), "L": (0, -1), "U": (-1, 0)}
 
 
 class DigChannel(object):
@@ -73,8 +73,45 @@ class DigChannel(object):
         return f"DigChannel({self.direction}, {self.metres}, {self.colour})"
 
 
+def dig_trench(instructions: list[DigChannel]) -> dict:
+    result = {}
+    i = j = 0
+    result[(i, j)] = "#"
+    for item in instructions:
+        if item.direction == "R":
+            for x in range(0, item.metres):
+                j += 1
+                result[(i, j)] = "#"
+        elif item.direction == "L":
+            for x in range(item.metres, 0, -1):
+                j -= 1
+                result[(i, j)] = "#"
+
+        elif item.direction == "D":
+            for x in range(0, item.metres):
+                i += 1
+                result[(i, j)] = "#"
+
+        elif item.direction == "U":
+            for x in range(item.metres, 0, -1):
+                i -= 1
+                result[(i, j)] = "#"
+
+    i_max = max(result.keys())[0]
+    j_max = max(result.keys())[1]
+    print(f"Max i,j {i_max},{j_max}")
+    for i in range(0, i_max + 1):
+        for j in range(0, j_max + 1):
+            if (i, j) not in result.keys():
+                result[(i, j)] = "."
+    return result
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
     channels = [DigChannel(row) for row in data]
     print(channels)
+    grid = dig_trench(channels)
+    print(grid)
+    print_grid(grid)
