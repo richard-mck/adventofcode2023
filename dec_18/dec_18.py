@@ -115,5 +115,24 @@ if __name__ == "__main__":
     grid = dig_trench(channels)
     print(grid)
     print_grid(grid)
-    count_excavated_squares = sum([1 for i in grid if grid[i] == "#"])
-    print(f"Total channel length: {count_excavated_squares}")
+    dugout = [i for i in grid if grid[i] == "#"]
+    print(f"Total channel length: {len(dugout)}")
+    # Cribbing from day 10:
+    # Using the shoelace formula - https://en.wikipedia.org/wiki/Shoelace_formula
+    # combined with Pick's theorem - https://en.wikipedia.org/wiki/Pick's_theorem
+    # Pick's theorem: A = i + (b/2) - 1, where
+    #  - A = area = 1/2 ((X1Y2 - X2Y1) + ... + (XnYn+1 - Xn+1Yn))
+    #  - i = interior points - what we're solving for
+    #  - b = boundary points (e.g. number of loop tiles)
+    # Therefore: i = A - (b/2) + 1
+    area = 0
+    boundary_points = len(dugout)
+    for i in range(0, boundary_points - 1):
+        area_n = (dugout[i][1] * dugout[i + 1][0]) - (dugout[i + 1][1] * dugout[i][0])
+        area += area_n
+    # For the final point in the matrix, we must consider Xn,Yn and X0,Y0 to complete the boundary
+    area += (dugout[-1][1] * dugout[0][0]) - (dugout[0][1] * dugout[-1][0])
+    area = abs(area / 2)
+    internal = area - (boundary_points / 2) + 1
+    print(f"A:{area}, b:{boundary_points}, i:{internal}")
+    print(f"Sum: {boundary_points + internal}")
