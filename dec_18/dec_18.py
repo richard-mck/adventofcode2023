@@ -172,12 +172,19 @@ if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
     channels = [DigChannel(row) for row in data]
+    dig_length = sum(i.metres for i in channels)
+    print(dig_length)
     print(channels)
     grid = dig_trench(channels)
-    print(grid)
-    print_grid(grid)
     dugout = [i for i in grid if grid[i] == "#"]
-    print(f"Total channel length: {len(dugout)}")
-    area = calculate_area(dugout)
+    print(f"Total channel length: {dig_length}")
+    full_area = calculate_area(dugout, dig_length)
 
     # Part 2
+    channels = convert_channels(channels)
+    print(channels)
+    grid = dig_trench(channels)
+    dig_length = sum(i.metres for i in channels)
+    dugout = [i for i in grid if grid[i] == "#"]
+    print(f"Total channel length: {len(dugout)}")
+    area = calculate_area(dugout, dig_length)
