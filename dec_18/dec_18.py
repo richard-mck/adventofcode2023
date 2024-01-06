@@ -137,7 +137,7 @@ def dig_trench(instructions: list[DigChannel]) -> dict:
     return result
 
 
-def calculate_area(holes: list[tuple[int, int]]) -> float:
+def calculate_area(holes: list[tuple[int, int]], boundary_length: int) -> float:
     # Cribbing from day 10:
     # Using the shoelace formula - https://en.wikipedia.org/wiki/Shoelace_formula
     # combined with Pick's theorem - https://en.wikipedia.org/wiki/Pick's_theorem
@@ -147,17 +147,16 @@ def calculate_area(holes: list[tuple[int, int]]) -> float:
     #  - b = boundary points (e.g. number of loop tiles)
     # Therefore: i = A - (b/2) + 1
     area = 0
-    boundary_points = len(dugout)
-    for i in range(0, boundary_points - 1):
-        area_n = (dugout[i][1] * dugout[i + 1][0]) - (dugout[i + 1][1] * dugout[i][0])
+    for i in range(0, len(holes) - 1):
+        area_n = (holes[i][1] * holes[i + 1][0]) - (holes[i + 1][1] * holes[i][0])
         area += area_n
     # For the final point in the matrix, we must consider Xn,Yn and X0,Y0 to complete the boundary
-    area += (dugout[-1][1] * dugout[0][0]) - (dugout[0][1] * dugout[-1][0])
+    area += (holes[-1][1] * holes[0][0]) - (holes[0][1] * holes[-1][0])
     area = abs(area / 2)
-    internal = area - (boundary_points / 2) + 1
-    print(f"A:{area}, b:{boundary_points}, i:{internal}")
-    print(f"Sum: {boundary_points + internal}")
-    return boundary_points + area
+    internal = area - (boundary_length / 2) + 1
+    print(f"A:{area}, b:{boundary_length}, i:{internal}")
+    print(f"Sum: {boundary_length + internal}")
+    return boundary_length + area
 
 
 def convert_channels(channels: list[DigChannel]) -> list[DigChannel]:
