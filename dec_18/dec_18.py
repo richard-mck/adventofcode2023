@@ -57,8 +57,24 @@ The Elves are concerned the lagoon won't be large enough; if they follow their d
 could it hold?
 """
 
-from common_functions import load_input
+from common_functions import load_input, print_grid
+
+COMPASS = {"EAST": (0, 1), "SOUTH": (1, 0), "WEST": (0, -1), "NORTH": (-1, 0)}
+
+
+class DigChannel(object):
+    def __init__(self, raw_data: str):
+        split = raw_data.split()
+        self.direction = split[0]
+        self.metres = int(split[1])
+        self.colour = split[2].replace("(", "").replace(")", "")
+
+    def __repr__(self):
+        return f"DigChannel({self.direction}, {self.metres}, {self.colour})"
+
 
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
+    channels = [DigChannel(row) for row in data]
+    print(channels)
