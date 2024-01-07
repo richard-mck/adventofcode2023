@@ -96,15 +96,28 @@ def evaluate_string_operation(instruction: str, part: Part) -> str or None:
     if ops[action](part_value, required_value):
         return next_step
     return None
+
+
+def convert_instructions(raw_instr: list[str]) -> dict[str, list[str]]:
+    """Given a list of raw instructions, convert these to named steps and return a dict with names as keys"""
+    result = {}
+    # Example instruction rfg{s<537:gd,x>2440:R,A}
+    for item in raw_instr:
+        name_and_steps = item.split("{")
+        name = name_and_steps[0]
+        steps = name_and_steps[1][:-1]
+        steps = steps.split(",")
+        result[name] = steps
+    return result
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
     parsed = parse_data_on_empty_rows(data)
     print(parsed)
-    instructions = parsed[0]
-    print(instructions)
     parts = [Part(i) for i in parsed[1]]
     print(parts)
     evaluate_string_operation("a>3333:R", parts[0])
-    instructions = convert_instructions(instructions)
+    instructions = convert_instructions(parsed[0])
     print(instructions)
