@@ -63,7 +63,12 @@ of the parts that ultimately get accepted?
 To begin, get your puzzle input
 """
 
+
+import operator
+
 from common_functions import load_input, parse_data_on_empty_rows
+
+ops = {"<": operator.lt, ">": operator.gt}
 
 
 class Part(object):
@@ -80,6 +85,17 @@ class Part(object):
         return f"Part(x:{self.x}, m:{self.m}, a:{self.a},s:{self.s})"
 
 
+def evaluate_string_operation(instruction: str, part: Part) -> str or None:
+    # Example operation a>3333:R
+    part_value = getattr(part, instruction[0])
+    action = instruction[1]
+    next_step = instruction.split(":")
+    required_value = int(next_step[0][2:])
+    next_step = next_step[1]
+    print(f"{instruction} -> {part_value} {action} {required_value} : {next_step}")
+    if ops[action](part_value, required_value):
+        return next_step
+    return None
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
@@ -89,3 +105,6 @@ if __name__ == "__main__":
     print(instructions)
     parts = [Part(i) for i in parsed[1]]
     print(parts)
+    evaluate_string_operation("a>3333:R", parts[0])
+    instructions = convert_instructions(instructions)
+    print(instructions)
