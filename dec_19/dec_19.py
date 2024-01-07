@@ -63,8 +63,29 @@ of the parts that ultimately get accepted?
 To begin, get your puzzle input
 """
 
-from common_functions import load_input
+from common_functions import load_input, parse_data_on_empty_rows
+
+
+class Part(object):
+    def __init__(self, raw_part: str):
+        elements = raw_part.split(",")
+        # Items within the part are always ordered x,m,a,s and have the form x=$INT
+        self.x = int(elements[0].split("=")[1])
+        self.m = int(elements[1].split("=")[1])
+        self.a = int(elements[2].split("=")[1])
+        # The S type always has a closing bracket
+        self.s = int(elements[3].split("=")[1].replace("}", ""))
+
+    def __repr__(self):
+        return f"Part(x:{self.x}, m:{self.m}, a:{self.a},s:{self.s})"
+
 
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
+    parsed = parse_data_on_empty_rows(data)
+    print(parsed)
+    instructions = parsed[0]
+    print(instructions)
+    parts = [Part(i) for i in parsed[1]]
+    print(parts)
