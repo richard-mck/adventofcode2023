@@ -145,3 +145,20 @@ if __name__ == "__main__":
     evaluate_string_operation("a>3333:R", parts[0])
     instructions = convert_instructions(parsed[0])
     print(instructions)
+
+    accepted = []
+    rejected = []
+    for part in parts:
+        workflow = evaluate_part(instructions, part)
+        match workflow:
+            case "A":
+                accepted.append(part)
+            case "R":
+                rejected.append(part)
+            case other:
+                print(f"Error processing part {part}")
+    print("Accepted: ", end="")
+    print(accepted)
+    print(f"Sum of accepted parts: {sum([i.sum for i in accepted])}")
+    print("Rejected: ", end="")
+    print(rejected)
