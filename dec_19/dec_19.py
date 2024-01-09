@@ -112,6 +112,29 @@ def convert_instructions(raw_instr: list[str]) -> dict[str, list[str]]:
     return result
 
 
+def evaluate_part(steps: dict[str, list[str]], part: Part) -> str or None:
+    next_step = steps["in"]
+    accept_reject = ["A", "R"]
+    while next_step is not None:
+        for item in next_step:
+            # We have reached the "GOTO" portion of the instructions
+            if item == next_step[-1] and item not in accept_reject:
+                next_step = steps[item]
+                continue
+            elif item in accept_reject:
+                return item
+            # We're still iterating so we need to actually evalute the instructions
+            result = evaluate_string_operation(item, part)
+            if result in accept_reject:
+                return result
+            elif result is None:
+                continue
+            else:
+                next_step = steps[result]
+                break
+    return None
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     print(data)
