@@ -80,6 +80,7 @@ class Part(object):
         self.a = int(elements[2].split("=")[1])
         # The S type always has a closing bracket
         self.s = int(elements[3].split("=")[1].replace("}", ""))
+        self.sum = self.x + self.m + self.a + self.s
 
     def __repr__(self):
         return f"Part(x:{self.x}, m:{self.m}, a:{self.a},s:{self.s})"
