@@ -107,7 +107,6 @@ def evaluate_string_operation(instruction: str, part: Part) -> str or None:
     next_step = instruction.split(":")
     required_value = int(next_step[0][2:])
     next_step = next_step[1]
-    print(f"{instruction} -> {part_value} {action} {required_value} : {next_step}")
     if ops[action](part_value, required_value):
         return next_step
     return None
@@ -151,30 +150,13 @@ def evaluate_part(steps: dict[str, list[str]], part: Part) -> str or None:
 
 if __name__ == "__main__":
     data = load_input("example.txt")
-    print(data)
     parsed = parse_data_on_empty_rows(data)
-    print(parsed)
     parts = [Part(i) for i in parsed[1]]
-    print(parts)
-    evaluate_string_operation("a>3333:R", parts[0])
     instructions = convert_instructions(parsed[0])
-    print(instructions)
 
-    accepted = []
-    rejected = []
-    for part in parts:
-        workflow = evaluate_part(instructions, part)
-        match workflow:
-            case "A":
-                accepted.append(part)
-            case "R":
-                rejected.append(part)
-            case other:
-                print(f"Error processing part {part}")
+    accepted = [part for part in parts if evaluate_part(instructions, part) == "A"]
     print("Accepted: ", end="")
     print(accepted)
     print(f"Sum of accepted parts: {sum([i.sum for i in accepted])}")
-    print("Rejected: ", end="")
-    print(rejected)
 
     # Part 2
