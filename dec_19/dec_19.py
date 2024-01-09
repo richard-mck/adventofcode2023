@@ -160,3 +160,15 @@ if __name__ == "__main__":
     print(f"Sum of accepted parts: {sum([i.sum for i in accepted])}")
 
     # Part 2
+    # here we must consider which possible combinations of ratings result in accepted parts
+    # e.g. we are trying to find all ranges of x,m,a,s values that result in an accepted part
+    # thinking thru the process:
+    # for each rule, if a part is not outright rejected or accepted, the graph splits
+    # we must keep track of the ranges of values down each branch of the graph
+    # we still start at "in" and progress from there.
+    # if we reach an accepted part, we should return the parameter ranges that led to this point
+    # this could be done with a recursive function, how to store the data?
+    accepted = []
+    valid_part = {"x": 0, "m": 0, "a": 0, "s": 0}
+    def check_instruction(inst: str, part: dict[str, int]) -> dict[str, int]:
+
