@@ -40,7 +40,15 @@ def dijkstra_search(
 
         for next in grid.get_neighbours(current):
             new_cost = cost_so_far[current].cost + grid.grid[next]
-            next_tile = Tile(new_cost, get_direction(current, next), 0)
+            next_dir = get_direction(current, next)
+            # TODO: there's an edge case bug here where the down direction doesn't register correctly
+            if next_dir == cost_so_far[current].dir:
+                sslt = cost_so_far[current].sslt + 1
+            else:
+                sslt = 0
+            if sslt == 3:
+                continue
+            next_tile = Tile(new_cost, next_dir, sslt)
             if next not in cost_so_far or new_cost < cost_so_far[next].cost:
                 cost_so_far[next] = next_tile
                 frontier.append(next)
