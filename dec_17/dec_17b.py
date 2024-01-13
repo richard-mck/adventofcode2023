@@ -14,6 +14,16 @@ def get_direction(previous: tuple[int, int], current: tuple[int, int]) -> str:
     return list(DIRECTIONS.keys())[list(DIRECTIONS.values()).index((i, j))]
 
 
+class Tile(object):
+    def __init__(self, cost: int, dir: str, sslt: int):
+        self.cost = cost
+        self.dir = dir
+        self.sslt = sslt
+
+    def __repr__(self):
+        return f"Tile({self.cost}, {self.dir}, {self.sslt})"
+
+
 def dijkstra_search(
     grid: Grid, start: tuple[int, int], goal: tuple[int, int]
 ) -> (dict, dict):
@@ -22,16 +32,17 @@ def dijkstra_search(
     came_from = {}
     cost_so_far = {}
     came_from[start] = None
-    cost_so_far[start] = 0
+    cost_so_far[start] = Tile(0, "start", 0)
     while len(frontier) > 0:
         current = frontier.popleft()
         if current == goal:
             break
 
         for next in grid.get_neighbours(current):
-            new_cost = cost_so_far[current] + grid.grid[next]
-            if next not in cost_so_far or new_cost < cost_so_far[next]:
-                cost_so_far[next] = new_cost
+            new_cost = cost_so_far[current].cost + grid.grid[next]
+            next_tile = Tile(new_cost, get_direction(current, next), 0)
+            if next not in cost_so_far or new_cost < cost_so_far[next].cost:
+                cost_so_far[next] = next_tile
                 frontier.append(next)
                 came_from[next] = current
 
