@@ -61,7 +61,7 @@ from common_functions import load_input, Grid, print_grid
 
 # Block = namedtuple("Block", "pos val visited prior_direction steps_since_turn")
 DIRECTIONS = {"right": (0, 1), "down": (1, 0), "left": (0, -1), "up": (-1, 0)}
-ARROWS = {"right": "→", "down": "↓", "left": "←", "up": "↑"}
+ARROWS = {"right": "→", "down": "↓", "left": "←", "up": "↑", "start": "."}
 
 
 def get_direction(previous: tuple[int, int], current: tuple[int, int]) -> str:
@@ -86,7 +86,7 @@ class Block(object):
         self.heat_loss = heat_loss
 
     def __repr__(self):
-        return f"Block({self.pos}, {self.val}, {self.prior_dir}, {self.sslt}, {self.heat_loss})"
+        return f"Block(pos={self.pos}, val={self.val}, prior_dir={self.prior_dir}, sslt={self.sslt}, heat_loss={self.heat_loss})"
 
     def get_neighbours(self):
         (i, j) = self.pos
@@ -104,7 +104,7 @@ def dijkstra(
     block_queue = deque()
     total_loss: dict[tuple[int, int], Block] = {}
     prev: dict[tuple[int, int], Optional[tuple[int, int]]] = {}
-    total_loss[source] = Block(source, graph.grid[source], "right", 0, 0)
+    total_loss[source] = Block(source, graph.grid[source], "start", 0, 0)
     prev[source] = None
     block_queue.append(source)
     travel_count = 0
@@ -138,6 +138,19 @@ def dijkstra(
     # Maybe useful? https://stackabuse.com/courses/graphs-in-python-theory-and-implementation/lessons/dijkstras-algorithm/
 
 
+def rebuild_path(mapped, start, dest) -> list:
+    current = dest
+    path = []
+    if dest not in mapped:
+        return []
+    while current != start:
+        path.append(current)
+        current = mapped[current]
+    path.append(start)
+    path.reverse()
+    return path
+
+
 if __name__ == "__main__":
     data = load_input("example.txt")
     grid = Grid(data)
@@ -161,5 +174,10 @@ if __name__ == "__main__":
     # Does this suggest that A* is the more appropriate approach since we can include a heuristic to determine the
     # weight of each move? - https://en.wikipedia.org/wiki/A*_search_algorithm
     dist, steps = dijkstra(grid, start, goal)
+    print(dist)
     new_grid = {step: ARROWS[dist[step].prior_dir] for step in dist}
+    heat_loss = {step: f"{str(dist[step].heat_loss)}  " for step in dist}
     print_grid(new_grid)
+    print_grid(heat_loss)
+    path = rebuild_path(dist, start, goal)
+    print(path)
